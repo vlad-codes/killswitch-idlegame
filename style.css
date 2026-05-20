@@ -1839,6 +1839,12 @@ body {
 
 .decision-result--outcome {
   font-style: italic;
+  animation: decision-result-in 0.2s ease-out;
+}
+
+@keyframes decision-result-in {
+  from { opacity: 0; transform: translateY(2px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
 
 .decision-result--success {
@@ -1850,7 +1856,7 @@ body {
 }
 
 .decision-result--fail {
-  color: var(--text-muted);
+  color: #d97757;
 }
 
 .decision-cascade {
