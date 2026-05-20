@@ -155,11 +155,10 @@ const DecisionUI = (() => {
       }
 
       clearInterval(_typewriterTimer);
+      sitEl.textContent = resultText;
       sitEl.className = resultClass;
-      typewrite(sitEl, resultText);
 
       setTimeout(() => {
-        sitEl.className = 'decision-situation';
         setIdle();
         scheduleNext();
       }, 3000);
