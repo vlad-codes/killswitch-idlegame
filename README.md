@@ -14,14 +14,18 @@ Click the Kill Switch to gather resistance. Use it to build your movement and un
 
 ## Features
 
-- **Idle progression** — buildings generate resistance per second, upgrades multiply output
-- **Breakthroughs** — 30+ upgrades that scale click power and production
-- **Field Decisions** — scenario-based events where your choice affects production for 30 seconds
-- **Phantom Nodes** — interceptable signal bursts that appear randomly on screen for a click power boost
+- **14 operations** — from a lone street activist to a global satellite constellation, each with its own upgrade tiers and milestone multipliers
+- **Synergy upgrades** — 8 building pairs that boost each other's output the more you own of both
+- **Conviction** — every achievement gives a permanent +2% to all production (stacks indefinitely)
+- **Breakthroughs** — 60+ upgrades that scale click power and production, including milestone auto-grants at 100/150/200/300/450/600 owned
+- **Field Decisions** — branching scenario events with building-biased success probability and a rare cascade outcome
+- **Phantom Nodes** — three types (Blue/Gold/Red) with distinct rewards and risk windows
 - **Critical Moments** — catch the Kill Switch at peak intensity for a ×5 hit
-- **Achievements** — 20+ milestones tracking your progress
-- **Prestige** — reset with a permanent multiplier and go again
-- **Offline progression** — up to 4 hours of passive gains while away
+- **Achievements** — 60 milestones across resistance, clicks, buildings, upgrades, and playtime
+- **Prestige / Second Wave** — reset with a permanent multiplier and carry your achievements forward
+- **Movement Strategy** — a Defector-funded meta-tree that unlocks after Wave 1, with three strategic paths (Sabotage / Propaganda / Diplomacy) and 18 purchasable nodes
+- **Endless ladder** — post-win checkpoints up to 1T resistance with persistent rewards
+- **Offline progression** — up to 4 hours of passive gains while away (extendable via the Generational Turn meta-node)
 
 ## Tech
 

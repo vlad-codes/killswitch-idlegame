@@ -53,6 +53,10 @@
           <span class="acts-label">Acts of defiance</span>
           <span class="acts-value" id="acts">0</span>
         </div>
+        <div class="conviction-line hidden" id="conviction-line">
+          <span class="conviction-label">Conviction</span>
+          <span class="conviction-value" id="conviction-value">+0%</span>
+        </div>
       </div>
 
       <div class="switch-wrap">
@@ -113,6 +117,7 @@
     <section id="center-col">
       <div class="col-tabs">
         <button class="col-tab active" data-tab="breakthroughs">Breakthroughs <span id="upgrades-count" class="tab-count"></span></button>
+        <button class="col-tab" data-tab="strategy">Strategy</button>
         <button class="col-tab" data-tab="achievements">Achievements</button>
         <button class="col-tab" data-tab="stats">Stats</button>
       </div>
@@ -143,6 +148,11 @@
             <div class="event-log-empty">No events yet.</div>
           </div>
         </div>
+      </div>
+
+      <!-- Tab: Strategy -->
+      <div class="tab-panel hidden" id="tab-strategy">
+        <div class="strategy-panel" id="strategy-panel"></div>
       </div>
 
       <!-- Tab: Achievements -->
@@ -235,11 +245,13 @@
   <script src="src/data/achievements.js"></script>
   <script src="src/data/phantom_messages.js"></script>
   <script src="src/data/decisions.js"></script>
+  <script src="src/data/metatree.js"></script>
   <script src="src/ui/hud.js"></script>
   <script src="src/ui/buildings.js"></script>
   <script src="src/ui/news.js"></script>
   <script src="src/ui/decisions.js"></script>
   <script src="src/ui/phantom.js"></script>
+  <script src="src/ui/metatree.js"></script>
   <script src="src/core/game.js"></script>
 </body>
 </html>

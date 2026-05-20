@@ -54,19 +54,38 @@ const HUD = (() => {
 
     const acts = document.getElementById('acts');
     if (acts) acts.textContent = state.totalClicks.toLocaleString('en-US');
+
+    const convLine = document.getElementById('conviction-line');
+    const convVal  = document.getElementById('conviction-value');
+    const achCount = (state.achievements || []).length;
+    if (achCount > 0) {
+      const achRate = (state.metaTreePurchased || []).includes('tree_b5') ? 3 : 2;
+      if (convLine) convLine.classList.remove('hidden');
+      if (convVal)  convVal.textContent = '+' + (achCount * achRate) + '%';
+    }
   }
 
   // ===== Progress =====
   const WIN_TARGET = 1e9;
 
+  function getNextTarget(state) {
+    if (state.resistance < WIN_TARGET) return WIN_TARGET;
+    // After first win, show progress toward next uncleaned checkpoint
+    if (typeof CHECKPOINTS === 'undefined') return WIN_TARGET;
+    const cleared = state.clearedCheckpoints || [];
+    const next = CHECKPOINTS.find(cp => !cleared.includes(cp.id));
+    return next ? next.at : WIN_TARGET;
+  }
+
   function updateProgress(state) {
-    const v = Math.min(state.resistance / WIN_TARGET, 1);
+    const target = getNextTarget(state);
+    const v = Math.min(state.resistance / target, 1);
     const fill = document.getElementById('progress-fill');
     const pct = document.getElementById('progress-percent');
     const sub = document.getElementById('progress-sub');
     if (fill) fill.style.width = (v * 100).toFixed(2) + '%';
     if (pct)  pct.textContent  = (v * 100).toFixed(v < 0.1 ? 3 : 1) + '%';
-    if (sub)  sub.textContent  = fmt(Math.floor(state.resistance)) + ' / ' + fmt(WIN_TARGET) + ' Resistance';
+    if (sub)  sub.textContent  = fmt(Math.floor(state.resistance)) + ' / ' + fmt(target) + ' Resistance';
   }
 
   // ===== Milestone Ticker =====
