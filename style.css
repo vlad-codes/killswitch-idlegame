@@ -1837,6 +1837,19 @@ body {
   color: var(--text-muted);
 }
 
+.decision-result--success {
+  color: #4fc97a;
+}
+
+.decision-result--cascade {
+  color: #f0c040;
+  font-weight: bold;
+}
+
+.decision-result--fail {
+  color: var(--text-muted);
+}
+
 .decision-cascade {
   color: #f59e0b;
   font-weight: 700;
