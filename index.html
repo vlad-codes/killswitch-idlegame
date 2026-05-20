@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Kill Switch — Resistance against unchecked AI</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <div class="grain"></div>
+  <div class="scanlines"></div>
+  <div class="stripe stripe-tl"></div>
+  <div class="stripe stripe-br"></div>
+
+  <header id="app-header">
+    <div class="brand">
+      <span class="brand-dot"></span>
+      <div class="brand-text">
+        <span class="brand-name">KILL SWITCH</span>
+        <span class="brand-tagline">A resistance movement against unchecked AI</span>
+      </div>
+    </div>
+    <div class="header-right">
+      <span id="wave-pill" class="wave-pill hidden">WAVE 2</span>
+      <span id="save-indicator" class="save-indicator">
+        <span class="save-dot"></span>
+        <span class="save-text">Saved</span>
+      </span>
+      <button class="ghost-btn trophy-btn" id="trophy-btn" title="Achievements">
+        🏆 <span id="trophy-count">0</span>
+      </button>
+      <button class="ghost-btn" id="reset-btn" title="Reset progress">Reset</button>
+    </div>
+  </header>
+
+  <div id="situation-brief">
+    <span class="brief-label">SITUATION BRIEF</span>
+    <p class="brief-body">Year 2026. Frontier AI is scaling past every safety threshold — no democratic oversight, no accountability, no pause. You are building a global resistance movement. Reach <strong>1 billion in resistance</strong> to force a worldwide moratorium. Every voice counts.</p>
+  </div>
+
+  <main id="app">
+
+    <!-- LEFT: Counter + Big Button + Progress + News -->
+    <section id="left-col">
+      <div class="counter-block">
+        <div class="counter-eyebrow">Resistance gathered</div>
+        <div class="counter-value" id="counter">0</div>
+        <div class="counter-rate-wrap">
+          <div class="counter-rate" id="rate">+0/s</div>
+          <span class="decision-mult-badge hidden" id="decision-mult-badge">×2</span>
+        </div>
+        <div class="acts-line">
+          <span class="acts-label">Acts of defiance</span>
+          <span class="acts-value" id="acts">0</span>
+        </div>
+      </div>
+
+      <div class="switch-wrap">
+        <button id="kill-switch" aria-label="Act of defiance">
+          <span class="switch-outer">
+            <svg class="switch-text-ring" viewBox="0 0 200 200" aria-hidden="true">
+              <defs>
+                <path id="ringPath" d="M 100,100 m -82,0 a 82,82 0 1,1 164,0 a 82,82 0 1,1 -164,0" />
+              </defs>
+              <text class="switch-stencil">
+                <textPath href="#ringPath" startOffset="0%">EMERGENCY · DEFY · EMERGENCY · DEFY · </textPath>
+              </text>
+            </svg>
+          </span>
+          <span class="switch-ring"></span>
+          <span class="switch-core">
+            <span class="switch-label">KILL</span>
+            <span class="switch-dot"></span>
+            <span class="switch-label">SWITCH</span>
+          </span>
+        </button>
+        <div class="switch-hint-wrap">
+          <div class="switch-hint" id="switch-hint">Click for +1</div>
+          <span class="click-boost-badge hidden" id="click-boost-badge">×5 CLICK</span>
+        </div>
+      </div>
+
+      <div class="progress-block">
+        <div id="milestone-ticker" class="milestone-ticker">
+          <span id="milestone-text">Gather the first voices.</span>
+        </div>
+        <div class="progress-header">
+          <span>MORATORIUM</span>
+          <span id="progress-percent">0%</span>
+        </div>
+        <div class="progress-bar">
+          <div class="progress-fill" id="progress-fill"></div>
+        </div>
+        <div class="progress-sub" id="progress-sub">0 / 1,000,000,000</div>
+      </div>
+
+    </section>
+
+    <!-- CENTER: Upgrades + Field Reports -->
+    <section id="center-col">
+      <div class="col-header">
+        <h2 class="col-title">Breakthroughs</h2>
+        <span id="upgrades-count" class="col-meta">0</span>
+      </div>
+      <div id="upgrades-grid" class="upgrades-grid"></div>
+      <div id="upgrades-empty" class="empty-hint">
+        <div class="empty-icon">⚡</div>
+        <div class="empty-headline">No breakthroughs yet.</div>
+        <span class="empty-sub">Grow the movement to unlock them.</span>
+      </div>
+
+      <div class="news-panel" id="news-panel">
+        <div class="news-header">
+          <span class="news-label">FIELD REPORTS</span>
+        </div>
+        <div class="news-log" id="news-log">
+          <div class="news-empty">No reports yet. Start the movement.</div>
+        </div>
+      </div>
+
+      <div class="decision-panel hidden" id="decision-panel">
+        <div class="decision-header">
+          <span class="decision-label">FIELD DECISION</span>
+          <span class="decision-dot"></span>
+        </div>
+        <p class="decision-situation" id="decision-situation"></p>
+        <div class="decision-choices" id="decision-choices">
+          <button class="decision-btn" id="decision-a"></button>
+          <button class="decision-btn" id="decision-b"></button>
+        </div>
+        <div class="decision-result hidden" id="decision-result"></div>
+      </div>
+    </section>
+
+    <!-- RIGHT: Buildings -->
+    <section id="right-col">
+      <div class="col-header">
+        <h2 class="col-title">Movement</h2>
+        <div class="buy-multiplier">
+          <button class="bm-btn active" data-mult="1">×1</button>
+          <button class="bm-btn" data-mult="10">×10</button>
+          <button class="bm-btn" data-mult="100">×100</button>
+          <button class="bm-btn" data-mult="max">Max</button>
+        </div>
+      </div>
+      <div id="buildings-list"></div>
+      <div id="next-unlock" class="next-unlock hidden"></div>
+    </section>
+
+  </main>
+
+  <!-- Toast stack -->
+  <div id="toast-wrap"></div>
+
+  <!-- Tooltip -->
+  <div id="tooltip" class="hidden"></div>
+
+  <!-- Achievements Modal -->
+  <div id="achievements-modal" class="overlay hidden">
+    <div class="overlay-card achievements-card">
+      <div class="ach-modal-header">
+        <h2>Achievements <span id="trophy-count-modal"></span></h2>
+        <button class="ghost-btn" id="ach-close">Close</button>
+      </div>
+      <div class="achievements-grid" id="achievements-grid"></div>
+    </div>
+  </div>
+
+  <!-- Intro Overlay (first visit) -->
+  <div id="intro-overlay" class="overlay intro-overlay hidden">
+    <div class="intro-stripes top"></div>
+    <div class="intro-content">
+      <div class="intro-eyebrow">Year 2026 · Day Zero</div>
+      <h1 class="intro-headline">The clock<br>is ticking.</h1>
+      <p class="intro-body">
+        AI development races forward without oversight.<br>
+        Eight billion lives ride along.
+      </p>
+      <p class="intro-emphasis">You are one voice.</p>
+      <p class="intro-body intro-cta-hint">Make it count.</p>
+      <button class="intro-start" id="intro-start">
+        <span class="intro-start-label">Press the Kill Switch</span>
+        <span class="intro-start-arrow">→</span>
+      </button>
+    </div>
+    <div class="intro-stripes bottom"></div>
+  </div>
+
+  <!-- Victory Overlay -->
+  <div id="victory-overlay" class="overlay hidden">
+    <div class="overlay-card">
+      <div class="overlay-badge">MORATORIUM</div>
+      <h2>The world says no.</h2>
+      <p>Eight billion voices, one shared decision. AI development is paused worldwide. The movement that began with you and a single pamphlet has achieved the impossible.</p>
+      <div class="overlay-stats" id="victory-stats"></div>
+      <div class="victory-actions">
+        <button class="primary-btn" id="victory-continue">Continue</button>
+        <button class="secondary-btn hidden" id="second-wave-btn">↺ Launch Second Wave</button>
+      </div>
+      <p class="second-wave-hint hidden" id="second-wave-hint">The moratorium passed — but AI labs found loopholes within months. Start again stronger with +50% global production.</p>
+    </div>
+  </div>
+
+  <!-- Reset Confirm -->
+  <div id="reset-overlay" class="overlay hidden">
+    <div class="overlay-card">
+      <h2>Reset progress?</h2>
+      <p>All progress will be lost. The movement starts over from zero.</p>
+      <div class="overlay-actions">
+        <button class="ghost-btn" id="reset-cancel">Cancel</button>
+        <button class="danger-btn" id="reset-confirm">Reset</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="src/data/buildings.js"></script>
+  <script src="src/data/upgrades.js"></script>
+  <script src="src/data/milestones.js"></script>
+  <script src="src/data/news.js"></script>
+  <script src="src/data/achievements.js"></script>
+  <script src="src/data/phantom_messages.js"></script>
+  <script src="src/data/decisions.js"></script>
+  <script src="src/ui/hud.js"></script>
+  <script src="src/ui/buildings.js"></script>
+  <script src="src/ui/news.js"></script>
+  <script src="src/ui/decisions.js"></script>
+  <script src="src/ui/phantom.js"></script>
+  <script src="src/core/game.js"></script>
+</body>
+</html>
