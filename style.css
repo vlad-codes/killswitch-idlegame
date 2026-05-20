@@ -1837,13 +1837,16 @@ body {
   color: var(--text-muted);
 }
 
+.decision-result--outcome {
+  font-style: italic;
+}
+
 .decision-result--success {
   color: #4fc97a;
 }
 
 .decision-result--cascade {
   color: #f0c040;
-  font-weight: bold;
 }
 
 .decision-result--fail {

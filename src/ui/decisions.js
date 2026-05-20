@@ -125,24 +125,24 @@ const DecisionUI = (() => {
 
       const dur = getDecisionDuration(state);
       let resultText = '';
-      let resultClass = 'decision-result';
+      let resultClass = 'decision-situation decision-result--outcome';
 
       if (cascade) {
         applyRateBoost(state, CASCADE_DURATION);
         applyClickBoost(state, CASCADE_DURATION);
         NewsUI.push(state, 'Cascade — everything aligned. ×2.5 rate + ×3 click, 20s.');
-        resultText = 'CASCADE — ×2.5 rate + ×3 click for 20s';
-        resultClass += ' decision-result--success decision-result--cascade';
+        resultText = 'CASCADE — ×2.5 rate + ×3 click for 20s.';
+        resultClass += ' decision-result--cascade';
       } else if (success) {
         const secs = Math.round(dur / 1000);
         if (kind === 'rate') {
           applyRateBoost(state, dur);
           NewsUI.push(state, `The call paid off. ×2.5 rate — ${secs} seconds.`);
-          resultText = `SUCCESS — ×2.5 rate for ${secs}s`;
+          resultText = `The call paid off. ×2.5 rate for ${secs}s.`;
         } else {
           applyClickBoost(state, dur);
           NewsUI.push(state, `Bold move. ×3 click power — ${secs} seconds.`);
-          resultText = `SUCCESS — ×3 click power for ${secs}s`;
+          resultText = `Bold move. ×3 click power for ${secs}s.`;
         }
         resultClass += ' decision-result--success';
       } else {
@@ -150,17 +150,19 @@ const DecisionUI = (() => {
         state.resistance  = (state.resistance || 0) + consolation;
         const consolationFmt = HUD ? HUD.fmt(Math.floor(consolation)) : '?';
         NewsUI.push(state, "Didn't hold — but the movement pushed on. +" + consolationFmt + ' resistance.');
-        resultText = `FAILED — +${consolationFmt} resistance consolation`;
+        resultText = `Didn't hold — but the movement pushed on. +${consolationFmt} resistance.`;
         resultClass += ' decision-result--fail';
       }
 
-      resultEl.textContent = resultText;
-      resultEl.className = resultClass;
+      clearInterval(_typewriterTimer);
+      sitEl.className = resultClass;
+      typewrite(sitEl, resultText);
 
       setTimeout(() => {
+        sitEl.className = 'decision-situation';
         setIdle();
         scheduleNext();
-      }, 2500);
+      }, 3000);
     }
 
     btnA.onclick = () => resolve(scenario.aKind, scenario.aBuildingId);
