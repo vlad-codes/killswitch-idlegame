@@ -37,7 +37,10 @@ const Game = (() => {
       decisionMult:       1,
       decisionMultExpiry: 0,
       clickBoostMult:     1,
-      clickBoostExpiry:   0
+      clickBoostExpiry:   0,
+      defectorsSpent:     0,
+      metaTreePurchased:  [],
+      clearedCheckpoints: []
     };
   }
 
@@ -71,6 +74,9 @@ const Game = (() => {
       s.decisionMultExpiry  = s.decisionMultExpiry  || 0;
       s.clickBoostMult      = s.clickBoostMult      || 1;
       s.clickBoostExpiry    = s.clickBoostExpiry    || 0;
+      s.defectorsSpent      = s.defectorsSpent      || 0;
+      s.metaTreePurchased   = s.metaTreePurchased   || [];
+      s.clearedCheckpoints  = s.clearedCheckpoints  || [];
       return s;
     } catch (e) {
       return null;
@@ -105,7 +111,17 @@ const Game = (() => {
 
   function getConvictionMult(s) {
     const count = (s.achievements || []).length;
-    return 1 + count * 0.02;
+    const rate = (s.metaTreePurchased || []).includes('tree_b5') ? 0.03 : 0.02;
+    return 1 + count * rate;
+  }
+
+  // Defectors earned this wave — floor(cbrt(maxResistance / 1e6))
+  function getDefectorsEarned(s) {
+    return Math.floor(Math.cbrt((s.maxResistance || 0) / 1e6));
+  }
+
+  function getDefectorsAvailable(s) {
+    return Math.max(0, getDefectorsEarned(s) - (s.defectorsSpent || 0));
   }
 
   function grantMilestones(s) {
@@ -137,7 +153,10 @@ const Game = (() => {
       });
       total += b.baseRate * mult * owned;
     });
-    return total * (s.prestigeMult || 1) * getConvictionMult(s);
+    const unspent = getDefectorsAvailable(s);
+    const softPowerMult = (s.metaTreePurchased || []).includes('tree_c6') ? 0.02 : 0.01;
+    const defectorBonus = 1 + Math.min(5.0, unspent * softPowerMult);
+    return total * (s.prestigeMult || 1) * getConvictionMult(s) * defectorBonus;
   }
 
   function recomputeClickPower() {
@@ -260,16 +279,35 @@ const Game = (() => {
     state.prestige = (state.prestige || 0) + 1;
     state.prestigeMult = 1 + state.prestige * 0.5;
 
+    // Defectors earned this wave (before reset)
+    const earned = getDefectorsEarned(state);
+
     const carry = {
-      prestige:       state.prestige,
-      prestigeMult:   state.prestigeMult,
-      totalClicks:    state.totalClicks,
-      totalPlaytime:  state.totalPlaytime,
-      achievements:   state.achievements,
-      victoryReached: true,
+      prestige:           state.prestige,
+      prestigeMult:       state.prestigeMult,
+      totalClicks:        state.totalClicks,
+      totalPlaytime:      state.totalPlaytime,
+      achievements:       state.achievements,
+      victoryReached:     true,
+      clearedCheckpoints: state.clearedCheckpoints,
+      // defectors: reset each wave (tree resets); earned not carried forward
     };
 
     state = Object.assign(newState(), carry);
+
+    // Diplomatic Pouch: start with 1M resistance
+    if ((carry.metaTreePurchased || []).includes('tree_c1')) {
+      state.resistance = 1e6;
+      state.maxResistance = 1e6;
+    }
+
+    // Sympathetic Insider: start with 10 of each of the first 5 buildings
+    if ((carry.metaTreePurchased || []).includes('tree_c2')) {
+      ['activist','pamphlet','demo','blog','ngo'].forEach(id => {
+        state.buildings[id] = (state.buildings[id] || 0) + 10;
+      });
+    }
+
     state.rate = computeRate(state);
     recomputeClickPower();
     victoryShown = false;
@@ -280,6 +318,7 @@ const Game = (() => {
     document.getElementById('victory-overlay').classList.add('hidden');
     HUD.updateWave(state);
     HUD.updateAchievements(state);
+    if (typeof MetaTreeUI !== 'undefined') MetaTreeUI.refresh(state);
     save();
   }
 
@@ -445,10 +484,30 @@ const Game = (() => {
     scheduleCritical();
   }
 
+  function buyMetaNode(nodeId) {
+    if (!state || !META_TREE) return;
+    const node = META_TREE.find(n => n.id === nodeId);
+    if (!node) return;
+    if ((state.metaTreePurchased || []).includes(nodeId)) return;
+    if (getDefectorsAvailable(state) < node.cost) return;
+    // Capstone requires all 5 prior nodes in the same path
+    if (node.isCapstone) {
+      const pathNodes = META_TREE.filter(n => n.path === node.path && !n.isCapstone);
+      if (!pathNodes.every(n => (state.metaTreePurchased || []).includes(n.id))) return;
+    }
+    state.defectorsSpent = (state.defectorsSpent || 0) + node.cost;
+    state.metaTreePurchased = [...(state.metaTreePurchased || []), nodeId];
+    state.rate = computeRate(state);
+    recomputeClickPower();
+    HUD.toast(`Strategy: ${node.name}`, 'milestone');
+    if (typeof MetaTreeUI !== 'undefined') MetaTreeUI.refresh(state);
+  }
+
   return {
     init,
-    buyBuilding, buyUpgrade,
+    buyBuilding, buyUpgrade, buyMetaNode,
     getBuildingRate,
+    getDefectorsEarned, getDefectorsAvailable,
     getState: () => state
   };
 })();
