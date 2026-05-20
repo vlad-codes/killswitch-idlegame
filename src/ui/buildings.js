@@ -56,7 +56,7 @@ const BuildingsUI = (() => {
             <span class="b-price">${HUD.fmtCost(b.baseCost)} <span class="b-unit">R</span></span>
           </div>
           <div class="b-bot">
-            <span class="b-gain"><span class="b-arrow">→</span> +${HUD.fmt(b.baseRate)}/s</span>
+            <span class="b-gain"><span class="b-arrow">→</span> ${HUD.fmtRate(b.baseRate)}</span>
             <span class="b-owned">0 owned</span>
           </div>
         </div>
@@ -131,7 +131,7 @@ const BuildingsUI = (() => {
       const gainPerBuy = perUnitRate * displayN;
       const gainEl = card.querySelector('.b-gain');
       const ownedEl = card.querySelector('.b-owned');
-      gainEl.innerHTML = '<span class="b-arrow">→</span> +' + HUD.fmt(gainPerBuy) + '/s';
+      gainEl.innerHTML = '<span class="b-arrow">→</span> ' + HUD.fmtRate(gainPerBuy);
       ownedEl.textContent = owned + ' owned';
       ownedEl.classList.toggle('has-some', owned > 0);
     });
