@@ -119,7 +119,7 @@ const Game = (() => {
     let power = 1;
     state.upgrades.forEach(id => {
       const u = UPGRADES.find(x => x.id === id);
-      if (u && u.kind === 'click') power = Math.max(power, u.clickPower);
+      if (u && u.kind === 'click') power += u.clickPower;
     });
     state.clickPower = power;
   }

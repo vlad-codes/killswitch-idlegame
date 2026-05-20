@@ -131,6 +131,18 @@ const CLICK_UPGRADES = [
     desc:   'Tens of thousands on their feet. The whole world is watching.',
     effect: 'Each act of defiance now generates +10,000 resistance',
     cost: 50000000, clickPower: 10000, unlockClicks: 25000
+  },
+  {
+    id: 'click7', name: 'Documentary', icon: '🎬',
+    desc:   'A film that rewrites the narrative. Seen by hundreds of millions.',
+    effect: 'Each act of defiance now generates +50,000 resistance',
+    cost: 500000000, clickPower: 50000, unlockClicks: 50000
+  },
+  {
+    id: 'click8', name: 'Cultural Force', icon: '🌊',
+    desc:   'The movement has become the default. Resistance is the new normal.',
+    effect: 'Each act of defiance now generates +250,000 resistance',
+    cost: 5000000000, clickPower: 250000, unlockClicks: 100000
   }
 ];
 
