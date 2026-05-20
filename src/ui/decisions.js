@@ -1,11 +1,18 @@
-// Field Decision mini-game — scenario appears every ~90s, player picks A or B,
-// 50/50 random outcome: success = ×2 rate for 30s, failure = nothing.
+// Field Decision mini-game — scenario every ~90s, player picks A or B.
+// Each choice has a typed outcome (rate boost vs click boost) and a building
+// that biases the success probability. The higher your count of that building,
+// the better your odds (15% floor, 85% ceiling at 35 owned).
+// Failure always pays a consolation: 60s of current production added instantly.
+// Rare Cascade (5%): both bonuses fire together for 20s.
 const DecisionUI = (() => {
 
-  const MULT_VALUE    = 2;
-  const MULT_DURATION = 30000;
-  const MIN_INTERVAL  = 75000;
-  const MAX_INTERVAL  = 120000;
+  const RATE_MULT      = 2.5;   // rate multiplier on rate-kind success
+  const RATE_DURATION  = 45000; // ms
+  const CLICK_MULT     = 3;     // click boost multiplier on click-kind success
+  const CLICK_DURATION = 45000; // ms
+  const CASCADE_DURATION = 20000;
+  const MIN_INTERVAL   = 75000;
+  const MAX_INTERVAL   = 120000;
 
   let nextAt  = 0;
   let pending = false;
@@ -24,6 +31,11 @@ const DecisionUI = (() => {
   function scheduleNext(now) {
     nextAt  = (now || performance.now()) + MIN_INTERVAL + Math.random() * (MAX_INTERVAL - MIN_INTERVAL);
     pending = false;
+  }
+
+  function successChance(buildingId, state) {
+    const owned = (state.buildings && state.buildings[buildingId]) || 0;
+    return Math.min(0.85, 0.15 + owned / 50);
   }
 
   function setIdle() {
@@ -54,6 +66,19 @@ const DecisionUI = (() => {
     }, 18);
   }
 
+  function applyRateBoost(state, duration) {
+    state.decisionMult       = RATE_MULT;
+    state.decisionMultExpiry = Date.now() + duration;
+  }
+
+  function applyClickBoost(state, duration) {
+    const newExpiry = Date.now() + duration;
+    if (!state.clickBoostExpiry || Date.now() > state.clickBoostExpiry || CLICK_MULT > (state.clickBoostMult || 1)) {
+      state.clickBoostMult   = CLICK_MULT;
+      state.clickBoostExpiry = newExpiry;
+    }
+  }
+
   function showDecision(state) {
     pending = true;
     const scenario  = pickScenario();
@@ -73,12 +98,10 @@ const DecisionUI = (() => {
     btnA.classList.remove('btn-reveal');
     btnB.classList.remove('btn-reveal');
 
-    // Scan-in animation on the panel
     void panel.offsetWidth;
     panel.classList.add('decision-enter');
     setTimeout(() => panel.classList.remove('decision-enter'), 500);
 
-    // Typewriter for situation text, then reveal buttons staggered
     typewrite(sitEl, scenario.situation, () => {
       btnA.textContent = scenario.a;
       btnB.textContent = scenario.b;
@@ -87,21 +110,35 @@ const DecisionUI = (() => {
       setTimeout(() => btnB.classList.add('btn-reveal'), 90);
     });
 
-    function resolve() {
+    function resolve(kind, buildingId) {
       btnA.onclick = null;
       btnB.onclick = null;
       choicesEl.classList.add('hidden');
 
-      const success = Math.random() < 0.5;
+      const cascade = Math.random() < 0.05;
+      const success = cascade || Math.random() < successChance(buildingId, state);
 
-      if (success) {
-        state.decisionMult        = MULT_VALUE;
-        state.decisionMultExpiry  = Date.now() + MULT_DURATION;
-        resultEl.textContent = 'The call paid off. ×2 rate — 30 seconds.';
-        resultEl.className   = 'decision-result decision-success';
-        HUD.toast('Decision held — ×2 rate, 30s', 'milestone');
+      if (cascade) {
+        applyRateBoost(state, CASCADE_DURATION);
+        applyClickBoost(state, CASCADE_DURATION);
+        resultEl.textContent = 'Cascade — everything aligned. ×2.5 rate + ×3 click, 20s.';
+        resultEl.className   = 'decision-result decision-cascade';
+        HUD.toast('Cascade — ×2.5 rate + ×3 click, 20s', 'milestone');
+      } else if (success) {
+        if (kind === 'rate') {
+          applyRateBoost(state, RATE_DURATION);
+          resultEl.textContent = 'The call paid off. ×2.5 rate — 45 seconds.';
+          HUD.toast('Decision held — ×2.5 rate, 45s', 'milestone');
+        } else {
+          applyClickBoost(state, CLICK_DURATION);
+          resultEl.textContent = 'Bold move. ×3 click power — 45 seconds.';
+          HUD.toast('Decision held — ×3 click power, 45s', 'milestone');
+        }
+        resultEl.className = 'decision-result decision-success';
       } else {
-        resultEl.textContent = "Didn't hold. The movement carries on.";
+        const consolation = (state.rate || 0) * 60;
+        state.resistance  = (state.resistance || 0) + consolation;
+        resultEl.textContent = "Didn't hold — but the movement pushed on. +" + (HUD ? HUD.fmt(Math.floor(consolation)) : '?') + ' resistance.';
         resultEl.className   = 'decision-result decision-failure';
       }
 
@@ -111,12 +148,11 @@ const DecisionUI = (() => {
       }, success ? 3500 : 2500);
     }
 
-    btnA.onclick = resolve;
-    btnB.onclick = resolve;
+    btnA.onclick = () => resolve(scenario.aKind, scenario.aBuildingId);
+    btnB.onclick = () => resolve(scenario.bKind, scenario.bBuildingId);
   }
 
   function check(state, now) {
-    // Expire active multiplier
     if (state.decisionMultExpiry && Date.now() > state.decisionMultExpiry) {
       state.decisionMult       = 1;
       state.decisionMultExpiry = 0;
