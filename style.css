@@ -547,6 +547,33 @@ body {
   font-variant-numeric: tabular-nums;
 }
 
+.conviction-line {
+  margin-top: 6px;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 4px 14px;
+  border: 1px solid color-mix(in srgb, #4ade80 20%, transparent);
+  border-radius: 999px;
+  background: color-mix(in srgb, #4ade80 5%, transparent);
+}
+
+.conviction-label {
+  font-size: 10px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: color-mix(in srgb, #4ade80 70%, transparent);
+  font-weight: 600;
+}
+
+.conviction-value {
+  font-family: var(--font-num);
+  font-size: 12px;
+  font-weight: 700;
+  color: #4ade80;
+  font-variant-numeric: tabular-nums;
+}
+
 /* === Kill Switch (the iconic element) === */
 .switch-wrap {
   display: flex;

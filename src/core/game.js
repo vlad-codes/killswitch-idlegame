@@ -99,6 +99,11 @@ const Game = (() => {
     return b.baseRate * mult * (state.prestigeMult || 1);
   }
 
+  function getConvictionMult(s) {
+    const count = (s.achievements || []).length;
+    return 1 + count * 0.02;
+  }
+
   function computeRate(s) {
     let total = 0;
     BUILDINGS.forEach(b => {
@@ -112,7 +117,7 @@ const Game = (() => {
       });
       total += b.baseRate * mult * owned;
     });
-    return total * (s.prestigeMult || 1);
+    return total * (s.prestigeMult || 1) * getConvictionMult(s);
   }
 
   function recomputeClickPower() {

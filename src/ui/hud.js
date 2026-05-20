@@ -54,6 +54,14 @@ const HUD = (() => {
 
     const acts = document.getElementById('acts');
     if (acts) acts.textContent = state.totalClicks.toLocaleString('en-US');
+
+    const convLine = document.getElementById('conviction-line');
+    const convVal  = document.getElementById('conviction-value');
+    const achCount = (state.achievements || []).length;
+    if (achCount > 0) {
+      if (convLine) convLine.classList.remove('hidden');
+      if (convVal)  convVal.textContent = '+' + (achCount * 2) + '%';
+    }
   }
 
   // ===== Progress =====
