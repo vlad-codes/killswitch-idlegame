@@ -16,7 +16,7 @@ const MetaTreeUI = (() => {
         <div class="strategy-locked">
           <div class="strategy-locked-icon">🔒</div>
           <div class="strategy-locked-title">Movement Strategy</div>
-          <div class="strategy-locked-body">Complete Wave 1 (reach 1T resistance) to unlock the Defector tree.</div>
+          <div class="strategy-locked-body">Complete Wave 1 (reach 1B resistance) to unlock the Defector tree.</div>
         </div>`;
       return;
     }

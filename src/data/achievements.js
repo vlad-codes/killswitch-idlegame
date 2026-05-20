@@ -83,7 +83,7 @@ const ACHIEVEMENTS = [
   },
   {
     id: 'trillion', icon: '🏛️', name: 'The New World',
-    desc: 'Force a worldwide moratorium. Reach 1,000,000,000,000 resistance.',
+    desc: 'Beyond the moratorium. Reach 1,000,000,000,000 resistance.',
     check: s => s.maxResistance >= 1e12
   },
 
