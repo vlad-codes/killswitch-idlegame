@@ -12,16 +12,20 @@ const BUILDING_UPGRADE_TIERS = [
 ];
 
 const BUILDING_UPGRADE_NAMES = {
-  activist:   ['Better Signs',            'Megaphone',              'Social Media'],
-  pamphlet:   ['Color Printing',          'Door-to-door Drops',     'Local Press'],
-  demo:       ['Silent Marches',          'Mass Demonstration',     'General Strike'],
-  blog:       ['SEO Boost',               'Hidden Service',         'Multilingual'],
-  ngo:        ['Full-time Staff',         'EU Lobby Office',        'Observer Status'],
-  press:      ['Whistleblower Hotline',   'Encrypted Drops',        'Pulitzer Prize'],
-  initiative: ['Public Petition',         'Constitutional Court',   'Referendum'],
-  alliance:   ['Peer Review',             'Open Science',           'Nobel Prize'],
-  un:         ['Security Council',        'General Assembly',       'Binding Resolution'],
-  movement:   ['Global Strike',           'Generational Shift',     'Universal Consensus']
+  activist:      ['Better Signs',          'Megaphone',              'Social Media'],
+  pamphlet:      ['Color Printing',        'Door-to-door Drops',     'Local Press'],
+  demo:          ['Silent Marches',        'Mass Demonstration',     'General Strike'],
+  blog:          ['SEO Boost',             'Hidden Service',         'Multilingual'],
+  ngo:           ['Full-time Staff',       'EU Lobby Office',        'Observer Status'],
+  press:         ['Whistleblower Hotline', 'Encrypted Drops',        'Pulitzer Prize'],
+  initiative:    ['Public Petition',       'Constitutional Court',   'Referendum'],
+  whistleblower: ['Encrypted Channels',   'Global Network',         'Protected Sources'],
+  alliance:      ['Peer Review',           'Open Science',           'Nobel Prize'],
+  church:        ['Pastoral Outreach',     'Interfaith Coalition',   'Moral Authority'],
+  un:            ['Security Council',      'General Assembly',       'Binding Resolution'],
+  movement:      ['Global Strike',         'Generational Shift',     'Universal Consensus'],
+  constellation: ['Low Orbit',             'Global Relay',           'Mesh Network'],
+  convergence:   ['Shared Protocols',      'Unified Platform',       'One Signal'],
 };
 
 // Flavor text — the story behind each breakthrough.
@@ -61,10 +65,20 @@ const BUILDING_UPGRADE_DESC = {
     'The constitutional court is forced to rule on AI governance.',
     'The people vote directly. The outcome cannot be ignored.'
   ],
+  whistleblower: [
+    'Messages that vanish. Sources that survive.',
+    'A relay in every country. Nothing can be silenced.',
+    'Legal protection, global reach, zero exposure.'
+  ],
   alliance:   [
     'Peer-reviewed findings. The science cannot be disputed.',
     'Open datasets any researcher in the world can verify.',
     'The highest honor in science. Every institution listens now.'
+  ],
+  church:     [
+    'Sermons that reach the unchurched through community.',
+    'Hundreds of traditions, one shared ethical line.',
+    'Moral weight that moves governments.'
   ],
   un:         [
     'A permanent seat on the Security Council.',
@@ -75,7 +89,17 @@ const BUILDING_UPGRADE_DESC = {
     'A coordinated global strike. All sectors. All countries.',
     'A generation grows up with this as the baseline.',
     'Every nation, every culture, every voice — aligned.'
-  ]
+  ],
+  constellation: [
+    'A dozen satellites. Enough to cover the poles.',
+    'Continuous global uplink. No blackout zones.',
+    'Every device, every person, one shared mesh.'
+  ],
+  convergence: [
+    'Open standards let every platform interoperate.',
+    'One interface. Billions of users.',
+    'A single coordinated signal across the human network.'
+  ],
 };
 
 BUILDINGS.forEach(b => {
