@@ -481,6 +481,18 @@ const Game = (() => {
     const switchEl = document.getElementById('kill-switch');
     if (switchEl) switchEl.addEventListener('click', clickSwitch);
 
+    const convLine = document.getElementById('conviction-line');
+    if (convLine) {
+      convLine.addEventListener('mouseenter', e => {
+        const achRate = (state.metaTreePurchased || []).includes('tree_b5') ? 3 : 2;
+        HUD.showTooltip(
+          `<b>Conviction</b><br>Each earned achievement permanently increases your resistance rate by +${achRate}%. The bonus stacks with every new achievement.`,
+          e.clientX, e.clientY
+        );
+      });
+      convLine.addEventListener('mouseleave', HUD.hideTooltip);
+    }
+
     document.getElementById('reset-btn').addEventListener('click', () => {
       document.getElementById('reset-overlay').classList.remove('hidden');
     });

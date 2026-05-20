@@ -127,32 +127,26 @@ const DecisionUI = (() => {
       if (cascade) {
         applyRateBoost(state, CASCADE_DURATION);
         applyClickBoost(state, CASCADE_DURATION);
-        resultEl.textContent = 'Cascade — everything aligned. ×2.5 rate + ×3 click, 20s.';
-        resultEl.className   = 'decision-result decision-cascade';
-        HUD.toast('Cascade — ×2.5 rate + ×3 click, 20s', 'milestone');
+        NewsUI.push(state, 'Cascade — everything aligned. ×2.5 rate + ×3 click, 20s.');
       } else if (success) {
         const secs = Math.round(dur / 1000);
         if (kind === 'rate') {
           applyRateBoost(state, dur);
-          resultEl.textContent = `The call paid off. ×2.5 rate — ${secs} seconds.`;
-          HUD.toast(`Decision held — ×2.5 rate, ${secs}s`, 'milestone');
+          NewsUI.push(state, `The call paid off. ×2.5 rate — ${secs} seconds.`);
         } else {
           applyClickBoost(state, dur);
-          resultEl.textContent = `Bold move. ×3 click power — ${secs} seconds.`;
-          HUD.toast(`Decision held — ×3 click power, ${secs}s`, 'milestone');
+          NewsUI.push(state, `Bold move. ×3 click power — ${secs} seconds.`);
         }
-        resultEl.className = 'decision-result decision-success';
       } else {
         const consolation = (state.rate || 0) * 60;
         state.resistance  = (state.resistance || 0) + consolation;
-        resultEl.textContent = "Didn't hold — but the movement pushed on. +" + (HUD ? HUD.fmt(Math.floor(consolation)) : '?') + ' resistance.';
-        resultEl.className   = 'decision-result decision-failure';
+        NewsUI.push(state, "Didn't hold — but the movement pushed on. +" + (HUD ? HUD.fmt(Math.floor(consolation)) : '?') + ' resistance.');
       }
 
       setTimeout(() => {
         setIdle();
         scheduleNext();
-      }, success ? 3500 : 2500);
+      }, 1200);
     }
 
     btnA.onclick = () => resolve(scenario.aKind, scenario.aBuildingId);

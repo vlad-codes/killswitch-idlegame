@@ -125,7 +125,10 @@ const HUD = (() => {
       el.textContent = effective > 1 ? `Click for +${fmt(effective)}` : 'Click for +1';
       el.classList.toggle('hint-boosted', !!boostActive);
     }
-    if (badge) badge.classList.toggle('hidden', !boostActive);
+    if (badge) {
+      badge.classList.toggle('hidden', !boostActive);
+      if (boostActive) badge.textContent = `×${state.clickBoostMult || 1} CLICK`;
+    }
   }
 
   // ===== Particle on click =====
