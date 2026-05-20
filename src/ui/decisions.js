@@ -47,6 +47,7 @@ const DecisionUI = (() => {
 
     clearInterval(_typewriterTimer);
     panel.classList.add('decision-idle');
+    sitEl.className = 'decision-situation';
     sitEl.innerHTML = '<span class="decision-idle-placeholder">AWAITING FIELD DECISION<span class="idle-cursor">_</span></span>';
     choicesEl.classList.add('hidden');
     resultEl.className = 'decision-result hidden';
@@ -97,6 +98,7 @@ const DecisionUI = (() => {
     if (!panel) return;
 
     panel.classList.remove('decision-idle');
+    sitEl.className = 'decision-situation';
     resultEl.className = 'decision-result hidden';
     resultEl.textContent = '';
     choicesEl.classList.add('hidden');
