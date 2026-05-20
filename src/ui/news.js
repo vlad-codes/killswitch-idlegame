@@ -84,5 +84,5 @@ const NewsUI = (() => {
     }
   }
 
-  return { check, init };
+  return { check, init, push };
 })();
