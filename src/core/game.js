@@ -382,15 +382,18 @@ const Game = (() => {
     });
     document.getElementById('second-wave-btn').addEventListener('click', doPrestige);
 
-    document.getElementById('trophy-btn').addEventListener('click', HUD.openAchievements);
-    document.getElementById('ach-close').addEventListener('click', HUD.closeAchievements);
-    document.getElementById('achievements-modal').addEventListener('click', (e) => {
-      if (e.target === e.currentTarget) HUD.closeAchievements();
+    document.querySelectorAll('.col-tab').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.col-tab').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.tab-panel').forEach(p => p.classList.add('hidden'));
+        btn.classList.add('active');
+        document.getElementById('tab-' + btn.dataset.tab).classList.remove('hidden');
+        if (btn.dataset.tab === 'stats') HUD.renderStats(state);
+      });
     });
 
     document.addEventListener('keydown', (e) => {
       if (e.target.tagName === 'INPUT') return;
-      if (e.key === 'Escape') HUD.closeAchievements();
       if (e.key === '1') BuildingsUI.setBuyMult(1);
       if (e.key === '2') BuildingsUI.setBuyMult(10);
       if (e.key === '3') BuildingsUI.setBuyMult(100);

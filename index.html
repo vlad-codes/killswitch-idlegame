@@ -30,10 +30,6 @@
         <span class="save-dot"></span>
         <span class="save-text">Saved</span>
       </span>
-      <button class="ghost-btn trophy-btn" id="trophy-btn" title="Achievements">
-        🏆 <span id="trophy-count">0</span>
-      </button>
-      <button class="ghost-btn" id="reset-btn" title="Reset progress">Reset</button>
     </div>
   </header>
 
@@ -113,35 +109,51 @@
 
     </section>
 
-    <!-- CENTER: Upgrades + Field Reports -->
+    <!-- CENTER: Tabs -->
     <section id="center-col">
-      <div class="col-header">
-        <h2 class="col-title">Breakthroughs</h2>
-        <span id="upgrades-count" class="col-meta">0</span>
-      </div>
-      <div id="upgrades-grid" class="upgrades-grid"></div>
-      <div id="upgrades-empty" class="empty-hint">
-        <div class="empty-icon">⚡</div>
-        <div class="empty-headline">No breakthroughs yet.</div>
-        <span class="empty-sub">Grow the movement to unlock them.</span>
+      <div class="col-tabs">
+        <button class="col-tab active" data-tab="breakthroughs">Breakthroughs <span id="upgrades-count" class="tab-count"></span></button>
+        <button class="col-tab" data-tab="achievements">Achievements</button>
+        <button class="col-tab" data-tab="stats">Stats</button>
       </div>
 
-      <div class="news-panel" id="news-panel">
-        <div class="news-header">
-          <span class="news-label">FIELD REPORTS</span>
+      <!-- Tab: Breakthroughs -->
+      <div class="tab-panel" id="tab-breakthroughs">
+        <div id="upgrades-grid" class="upgrades-grid"></div>
+        <div id="upgrades-empty" class="empty-hint">
+          <div class="empty-icon">⚡</div>
+          <div class="empty-headline">No breakthroughs yet.</div>
+          <span class="empty-sub">Grow the movement to unlock them.</span>
         </div>
-        <div class="news-log" id="news-log">
-          <div class="news-empty">No reports yet. Start the movement.</div>
+
+        <div class="news-panel" id="news-panel">
+          <div class="news-header">
+            <span class="news-label">FIELD REPORTS</span>
+          </div>
+          <div class="news-log" id="news-log">
+            <div class="news-empty">No reports yet. Start the movement.</div>
+          </div>
+        </div>
+
+        <div class="event-log" id="event-log">
+          <div class="event-log-header">
+            <span class="event-log-label">EVENTS</span>
+          </div>
+          <div class="event-log-list" id="event-log-list">
+            <div class="event-log-empty">No events yet.</div>
+          </div>
         </div>
       </div>
 
-      <div class="event-log" id="event-log">
-        <div class="event-log-header">
-          <span class="event-log-label">EVENTS</span>
-        </div>
-        <div class="event-log-list" id="event-log-list">
-          <div class="event-log-empty">No events yet.</div>
-        </div>
+      <!-- Tab: Achievements -->
+      <div class="tab-panel hidden" id="tab-achievements">
+        <div class="achievements-grid" id="achievements-panel"></div>
+      </div>
+
+      <!-- Tab: Stats -->
+      <div class="tab-panel hidden" id="tab-stats">
+        <div class="stats-grid" id="stats-panel"></div>
+        <button class="ghost-btn reset-stats-btn" id="reset-btn">Reset all progress</button>
       </div>
 
     </section>
@@ -168,17 +180,6 @@
 
   <!-- Tooltip -->
   <div id="tooltip" class="hidden"></div>
-
-  <!-- Achievements Modal -->
-  <div id="achievements-modal" class="overlay hidden">
-    <div class="overlay-card achievements-card">
-      <div class="ach-modal-header">
-        <h2>Achievements <span id="trophy-count-modal"></span></h2>
-        <button class="ghost-btn" id="ach-close">Close</button>
-      </div>
-      <div class="achievements-grid" id="achievements-grid"></div>
-    </div>
-  </div>
 
   <!-- Intro Overlay (first visit) -->
   <div id="intro-overlay" class="overlay intro-overlay hidden">

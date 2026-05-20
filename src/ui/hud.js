@@ -241,32 +241,53 @@ const HUD = (() => {
     }
   }
 
-  // ===== Achievements modal =====
+  // ===== Achievements panel =====
   function updateAchievements(state) {
-    const badge = document.getElementById('trophy-count');
-    if (badge) badge.textContent = (state.achievements || []).length;
+    const panel = document.getElementById('achievements-panel');
+    if (!panel || typeof ACHIEVEMENTS === 'undefined') return;
 
-    const grid = document.getElementById('achievements-grid');
-    if (!grid || typeof ACHIEVEMENTS === 'undefined') return;
-
-    grid.innerHTML = ACHIEVEMENTS.map(a => {
+    panel.innerHTML = ACHIEVEMENTS.map(a => {
       const earned = (state.achievements || []).includes(a.id);
       return `<div class="ach-cell ${earned ? 'earned' : 'locked'}">
-        <div class="ach-icon">${earned ? a.icon : '▓'}</div>
-        <div class="ach-name">${earned ? a.name : '▓▓▓▓▓▓'}</div>
+        <div class="ach-header">
+          <div class="ach-icon">${earned ? a.icon : '▓'}</div>
+          <div class="ach-name">${earned ? a.name : '▓▓▓▓▓▓'}</div>
+        </div>
         <div class="ach-desc">${earned ? a.desc : '???'}</div>
       </div>`;
     }).join('');
   }
 
-  function openAchievements() {
-    const modal = document.getElementById('achievements-modal');
-    if (modal) modal.classList.remove('hidden');
-  }
+  // ===== Stats panel =====
+  function renderStats(state) {
+    const panel = document.getElementById('stats-panel');
+    if (!panel) return;
 
-  function closeAchievements() {
-    const modal = document.getElementById('achievements-modal');
-    if (modal) modal.classList.add('hidden');
+    const totalBuildings = Object.values(state.buildings || {}).reduce((a, b) => a + b, 0);
+    const playMs   = state.totalPlaytime || 0;
+    const playSecs = Math.floor(playMs / 1000);
+    const playMins = Math.floor(playSecs / 60);
+    const playHrs  = Math.floor(playMins / 60);
+    const playtime = playHrs > 0
+      ? `${playHrs}h ${playMins % 60}m`
+      : playMins > 0
+        ? `${playMins}m ${playSecs % 60}s`
+        : `${playSecs}s`;
+
+    const rows = [
+      ['Peak Resistance',  fmt(Math.floor(state.maxResistance || 0))],
+      ['Production',       fmtRate(state.rate || 0)],
+      ['Total Clicks',     (state.totalClicks || 0).toLocaleString('en-US')],
+      ['Structures Built', totalBuildings.toLocaleString('en-US')],
+      ['Breakthroughs',    (state.upgrades || []).length],
+      ['Achievements',     (state.achievements || []).length + ' / ' + (typeof ACHIEVEMENTS !== 'undefined' ? ACHIEVEMENTS.length : '?')],
+      ['Prestige',         state.prestige || 0],
+      ['Playtime',         playtime],
+    ];
+
+    panel.innerHTML = rows.map(([label, value]) =>
+      `<div class="stat-row"><span class="stat-label">${label}</span><span class="stat-value">${value}</span></div>`
+    ).join('');
   }
 
   return {
@@ -274,7 +295,7 @@ const HUD = (() => {
     glitchCounter,
     toast,
     updateWave,
-    updateAchievements, openAchievements, closeAchievements,
+    updateAchievements, renderStats,
     updateCounter, updateProgress, updateSwitchHint,
     refreshMilestone,
     spawnParticle,
