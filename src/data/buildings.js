@@ -70,8 +70,8 @@ const BUILDINGS = [
     icon: '🕵️',
     name: 'Whistleblower Network',
     flavor: 'Protected. Anonymous. Unstoppable.',
-    baseCost: 200000000,
-    baseRate: 30000,
+    baseCost: 130000000,
+    baseRate: 22000,
     costGrowth: 1.15
   },
   {
@@ -79,8 +79,8 @@ const BUILDINGS = [
     icon: '🔬',
     name: 'Research Alliance',
     flavor: 'Science has finally reached consensus.',
-    baseCost: 2500000000,
-    baseRate: 130000,
+    baseCost: 330000000,
+    baseRate: 44000,
     costGrowth: 1.15
   },
   {
@@ -88,8 +88,8 @@ const BUILDINGS = [
     icon: '⛪',
     name: 'Ethical Order',
     flavor: 'Two billion people with one moral voice.',
-    baseCost: 30000000000,
-    baseRate: 550000,
+    baseCost: 2000000000,
+    baseRate: 110000,
     costGrowth: 1.15
   },
   {
@@ -97,17 +97,8 @@ const BUILDINGS = [
     icon: '🌐',
     name: 'UN Resolution',
     flavor: 'The first joint decision of all nations.',
-    baseCost: 350000000000,
-    baseRate: 2400000,
-    costGrowth: 1.15
-  },
-  {
-    id: 'movement',
-    icon: '🌍',
-    name: 'Global Movement',
-    flavor: 'Eight billion people, one single no.',
-    baseCost: 4e12,
-    baseRate: 11000000,
+    baseCost: 5100000000,
+    baseRate: 260000,
     costGrowth: 1.15
   },
   {
@@ -115,8 +106,17 @@ const BUILDINGS = [
     icon: '🛰️',
     name: 'Satellite Constellation',
     flavor: 'Every corner of the Earth, in the loop.',
-    baseCost: 50e12,
-    baseRate: 55000000,
+    baseCost: 18000000000,
+    baseRate: 640000,
+    costGrowth: 1.15
+  },
+  {
+    id: 'movement',
+    icon: '🌍',
+    name: 'Global Movement',
+    flavor: 'Eight billion people, one single no.',
+    baseCost: 75000000000,
+    baseRate: 1600000,
     costGrowth: 1.15
   },
   {
@@ -124,8 +124,8 @@ const BUILDINGS = [
     icon: '🌊',
     name: 'Human Convergence',
     flavor: 'Seven billion minds. One shared decision.',
-    baseCost: 700e12,
-    baseRate: 280000000,
+    baseCost: 500000000000,
+    baseRate: 8000000,
     costGrowth: 1.15
   }
 ];
