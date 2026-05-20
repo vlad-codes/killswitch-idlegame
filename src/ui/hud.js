@@ -66,7 +66,7 @@ const HUD = (() => {
   }
 
   // ===== Progress =====
-  const WIN_TARGET = 1e12;
+  const WIN_TARGET = 1e9;
 
   function getNextTarget(state) {
     if (state.resistance < WIN_TARGET) return WIN_TARGET;

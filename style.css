@@ -928,21 +928,6 @@ body {
   transform: none;
   box-shadow: 0 0 8px rgba(245, 158, 11, 0.2);
 }
-.upgrade-cell.upgrade-synergy {
-  border-color: color-mix(in srgb, #06b6d4 35%, transparent);
-}
-.upgrade-cell.upgrade-synergy.bought {
-  opacity: 0.65;
-  cursor: default;
-  filter: none;
-  border-color: color-mix(in srgb, #06b6d4 40%, transparent);
-  background: color-mix(in srgb, #06b6d4 6%, transparent);
-}
-.upgrade-cell.upgrade-synergy.bought:hover {
-  opacity: 0.85;
-  transform: none;
-  box-shadow: 0 0 8px rgba(6, 182, 212, 0.2);
-}
 
 .empty-hint {
   font-size: 13px;

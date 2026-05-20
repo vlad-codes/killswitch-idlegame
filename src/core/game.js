@@ -3,7 +3,7 @@ const Game = (() => {
 
   const SAVE_KEY     = 'killswitch_v5';
   const SAVE_KEY_OLD = 'killswitch_v4';
-  const WIN_TARGET   = 1e12;
+  const WIN_TARGET   = 1e9;
 
   // Endless ladder — passive rewards unlocked at each threshold (once ever).
   const CHECKPOINTS = [
