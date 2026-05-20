@@ -503,6 +503,7 @@ const Game = (() => {
       localStorage.removeItem(SAVE_KEY);
       localStorage.removeItem(SAVE_KEY_OLD);
       localStorage.removeItem(INTRO_KEY);
+      state = null;
       location.reload();
     });
 
