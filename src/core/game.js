@@ -95,6 +95,10 @@ const Game = (() => {
       if ((u.kind === 'building' || u.kind === 'milestone') && u.buildingId === id && state.upgrades.includes(u.id)) {
         mult *= u.rateMult;
       }
+      if (u.kind === 'synergy' && state.upgrades.includes(u.id)) {
+        if (u.synA === id) mult *= (1 + (state.buildings[u.synB] || 0) * 0.0005);
+        else if (u.synB === id) mult *= (1 + (state.buildings[u.synA] || 0) * 0.0005);
+      }
     });
     return b.baseRate * mult * (state.prestigeMult || 1);
   }
@@ -125,6 +129,10 @@ const Game = (() => {
       UPGRADES.forEach(u => {
         if ((u.kind === 'building' || u.kind === 'milestone') && u.buildingId === b.id && s.upgrades.includes(u.id)) {
           mult *= u.rateMult;
+        }
+        if (u.kind === 'synergy' && s.upgrades.includes(u.id)) {
+          if (u.synA === b.id) mult *= (1 + (s.buildings[u.synB] || 0) * 0.0005);
+          else if (u.synB === b.id) mult *= (1 + (s.buildings[u.synA] || 0) * 0.0005);
         }
       });
       total += b.baseRate * mult * owned;

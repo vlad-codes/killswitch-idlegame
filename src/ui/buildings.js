@@ -211,6 +211,10 @@ const BuildingsUI = (() => {
     if (u.kind === 'click') {
       return state.totalClicks >= u.unlockClicks;
     }
+    if (u.kind === 'synergy') {
+      return (state.buildings[u.synA] || 0) >= u.unlockOwnedEach &&
+             (state.buildings[u.synB] || 0) >= u.unlockOwnedEach;
+    }
     // Milestones only appear once granted (auto-grant happens in game.js)
     return false;
   }
@@ -235,6 +239,7 @@ const BuildingsUI = (() => {
       anyVisible = true;
       const bought = state.upgrades.includes(u.id);
       const isMilestone = u.kind === 'milestone';
+      const isSynergy = u.kind === 'synergy';
       const canAfford = !bought && !isMilestone && state.resistance >= u.cost;
 
       if (!cell) {
@@ -243,7 +248,7 @@ const BuildingsUI = (() => {
         }
         cell = document.createElement('div');
         cell.id = id;
-        cell.className = 'upgrade-cell' + (isMilestone ? ' upgrade-milestone' : '');
+        cell.className = 'upgrade-cell' + (isMilestone ? ' upgrade-milestone' : '') + (isSynergy ? ' upgrade-synergy' : '');
         cell.textContent = u.icon;
         cell.dataset.id = u.id;
         if (!isMilestone) {
@@ -269,10 +274,11 @@ const BuildingsUI = (() => {
     const state = Game.getState();
     const bought = state.upgrades.includes(u.id);
     const isMilestone = u.kind === 'milestone';
+    const isSynergy = u.kind === 'synergy';
     const canAfford = !isMilestone && state.resistance >= u.cost;
 
     const statusBlock = bought
-      ? `<div class="tt-active">${isMilestone ? '★ Milestone reached' : '✓ Active'}</div>`
+      ? `<div class="tt-active">${isMilestone ? '★ Milestone reached' : isSynergy ? '⟳ Synergy active' : '✓ Active'}</div>`
       : isMilestone
         ? `<div class="tt-meta">Auto-unlocks at ${u.unlockOwned} owned</div>`
         : `<div class="tt-section tt-buy ${canAfford ? 'can-afford' : 'cannot-afford'}" style="margin-top:0;padding-top:0;border-top:none;">

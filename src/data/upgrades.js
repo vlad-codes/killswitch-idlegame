@@ -212,3 +212,34 @@ CLICK_UPGRADES.forEach(u => {
     unlockClicks: u.unlockClicks
   });
 });
+
+// Synergy upgrades — unlock at ≥15 of BOTH buildings; each gives +0.05% output per partner owned.
+const SYNERGY_PAIRS = [
+  { id: 'syn_activist_pamphlet',     a: 'activist',     b: 'pamphlet',     name: 'Door-to-door',          icon: '🤝',  desc: 'On-the-ground voices pair with printed material. Each multiplies the other\'s reach.' },
+  { id: 'syn_demo_blog',             a: 'demo',         b: 'blog',         name: 'Livestream the March',   icon: '📲',  desc: 'Every protest gets filmed. Every video gets read. The loop keeps expanding.' },
+  { id: 'syn_ngo_press',             a: 'ngo',          b: 'press',        name: 'Embedded Journalists',   icon: '🗞️', desc: 'Foundations fund the reporters. Reporters protect the foundations. Symbiosis.' },
+  { id: 'syn_initiative_alliance',   a: 'initiative',   b: 'alliance',     name: 'Evidence-based Law',     icon: '📜',  desc: 'Scientific consensus becomes the basis for every ballot initiative.' },
+  { id: 'syn_whistleblower_press',   a: 'whistleblower',b: 'press',        name: 'Source Pipeline',        icon: '🔐',  desc: 'Protected leakers feed directly into the newsroom. Stories flow faster.' },
+  { id: 'syn_church_un',             a: 'church',       b: 'un',           name: 'Moral Mandate',          icon: '⚖️',  desc: 'Religious institutions give UN resolutions ethical weight governments can\'t ignore.' },
+  { id: 'syn_movement_constellation',a: 'movement',     b: 'constellation',name: 'Mesh Broadcast',         icon: '📡',  desc: 'Ground networks relay satellite signals. A truly resilient global infrastructure.' },
+  { id: 'syn_convergence_movement',  a: 'convergence',  b: 'movement',     name: 'One Signal',             icon: '🌊',  desc: 'The convergence platform amplifies every voice the movement has built.' },
+];
+
+SYNERGY_PAIRS.forEach(pair => {
+  const bA = BUILDINGS.find(b => b.id === pair.a);
+  const bB = BUILDINGS.find(b => b.id === pair.b);
+  if (!bA || !bB) return;
+  const cost = Math.min(bA.baseCost, bB.baseCost) * 50;
+  UPGRADES.push({
+    id:              pair.id,
+    kind:            'synergy',
+    icon:            pair.icon,
+    name:            pair.name,
+    desc:            pair.desc,
+    effect:          `+0.05% output per partner owned — ${bA.name} ↔ ${bB.name}`,
+    cost:            cost,
+    synA:            pair.a,
+    synB:            pair.b,
+    unlockOwnedEach: 15
+  });
+});
