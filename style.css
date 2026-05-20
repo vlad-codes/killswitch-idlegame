@@ -2378,3 +2378,116 @@ body {
   #kill-switch { width: 180px; height: 180px; }
   .intro-headline { font-size: 56px; }
 }
+
+/* =========================================================
+   THEME TOGGLE BUTTON
+   ========================================================= */
+.theme-toggle {
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--text-muted);
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  transition: border-color 0.2s, color 0.2s, background 0.2s;
+  flex-shrink: 0;
+}
+.theme-toggle:hover {
+  border-color: var(--border-strong);
+  color: var(--text);
+  background: var(--ink-2);
+}
+
+/* =========================================================
+   LIGHT MODE
+   ========================================================= */
+body.light-mode {
+  --ink-0:        #f7f4ef;
+  --ink-1:        #ede9e0;
+  --ink-2:        #e2ddd4;
+  --ink-3:        #d5d0c6;
+  --ink-hover:    #cac5bb;
+  --border:       #cbc6bc;
+  --border-strong:#aaa59b;
+  --text:         #1c1a16;
+  --text-dim:     #3d3a33;
+  --text-muted:   #7a766c;
+  --text-faint:   #b0ada6;
+
+  background:
+    radial-gradient(ellipse 90% 50% at 50% -10%, rgba(237, 58, 58, 0.06) 0%, transparent 55%),
+    var(--ink-0);
+}
+
+body.light-mode #app-header {
+  background: rgba(247, 244, 239, 0.94);
+  border-bottom-color: var(--border);
+}
+
+body.light-mode .overlay {
+  background: rgba(240, 237, 230, 0.88);
+}
+
+body.light-mode .overlay-card {
+  background: var(--ink-0);
+  border: 1px solid var(--border);
+  box-shadow: 0 32px 80px rgba(0, 0, 0, 0.12);
+}
+
+
+body.light-mode .scanlines {
+  opacity: 0.015;
+}
+
+body.light-mode .grain {
+  opacity: 0.06;
+}
+
+body.light-mode #kill-switch .switch-core {
+  background: var(--ink-2);
+}
+
+body.light-mode .news-panel,
+body.light-mode .event-log {
+  background: var(--ink-1);
+  border-color: var(--border);
+}
+
+body.light-mode .building-row {
+  background: var(--ink-1);
+  border-color: var(--border);
+}
+body.light-mode .building-row:hover {
+  background: var(--ink-2);
+}
+
+body.light-mode .upgrade-card {
+  background: var(--ink-1);
+  border-color: var(--border);
+}
+body.light-mode .upgrade-card:hover {
+  background: var(--ink-2);
+}
+
+body.light-mode .decision-panel {
+  background: var(--ink-1);
+  border-color: var(--border);
+}
+
+body.light-mode .col-tabs {
+  background: var(--ink-1);
+  border-color: var(--border);
+}
+
+body.light-mode .col-tab {
+  color: var(--text-muted);
+}
+body.light-mode .col-tab.active {
+  color: var(--text);
+  background: var(--ink-2);
+}

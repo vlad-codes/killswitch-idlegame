@@ -461,12 +461,35 @@ const Game = (() => {
     if (startBtn) startBtn.addEventListener('click', closeIntro);
   }
 
+  // ===== THEME TOGGLE =====
+  const THEME_KEY = 'killswitch_theme';
+
+  function applyTheme(light) {
+    document.body.classList.toggle('light-mode', light);
+    const icon = document.getElementById('theme-toggle-icon');
+    if (icon) icon.textContent = light ? '☾' : '☀';
+  }
+
+  function initTheme() {
+    const saved = localStorage.getItem(THEME_KEY);
+    const light = saved === 'light';
+    applyTheme(light);
+    const btn = document.getElementById('theme-toggle');
+    if (btn) btn.addEventListener('click', () => {
+      const isLight = document.body.classList.toggle('light-mode');
+      localStorage.setItem(THEME_KEY, isLight ? 'light' : 'dark');
+      const icon = document.getElementById('theme-toggle-icon');
+      if (icon) icon.textContent = isLight ? '☾' : '☀';
+    });
+  }
+
   // ===== INIT =====
   function init() {
     state = loadState() || newState();
     grantMilestones(state);
     state.rate = computeRate(state);
     recomputeClickPower();
+    initTheme();
 
     BuildingsUI.renderBuildingsOnce();
     BuildingsUI.initBuyMultButtons();
