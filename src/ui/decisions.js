@@ -97,11 +97,11 @@ const DecisionUI = (() => {
       if (success) {
         state.decisionMult        = MULT_VALUE;
         state.decisionMultExpiry  = Date.now() + MULT_DURATION;
-        resultEl.textContent = 'Operation successful. ×2 production secured for 30 seconds.';
+        resultEl.textContent = 'The call paid off. ×2 rate — 30 seconds.';
         resultEl.className   = 'decision-result decision-success';
-        HUD.toast('Field op success — ×2 rate for 30s', 'milestone');
+        HUD.toast('Decision held — ×2 rate, 30s', 'milestone');
       } else {
-        resultEl.textContent = 'Operation failed. No effect on production.';
+        resultEl.textContent = "Didn't hold. The movement carries on.";
         resultEl.className   = 'decision-result decision-failure';
       }
 

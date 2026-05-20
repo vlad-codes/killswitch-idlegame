@@ -33,8 +33,8 @@ const ACHIEVEMENTS = [
   },
   {
     id:   'millionaire',
-    icon: '💰',
-    name: 'Millionaire',
+    icon: '📣',
+    name: 'A Million Voices',
     desc: 'Reach 1,000,000 resistance.',
     check: s => s.maxResistance >= 1e6
   },
@@ -83,14 +83,14 @@ const ACHIEVEMENTS = [
   {
     id:   'full_spectrum',
     icon: '🌐',
-    name: 'Full Spectrum',
+    name: 'Full Network',
     desc: 'Own at least one of every operation.',
     check: s => BUILDINGS.every(b => (s.buildings[b.id] || 0) >= 1)
   },
   {
     id:   'movement',
     icon: '🪧',
-    name: 'Movement',
+    name: 'Critical Mass',
     desc: 'Own 100 operations total.',
     check: s => Object.values(s.buildings).reduce((a, b) => a + b, 0) >= 100
   },

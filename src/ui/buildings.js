@@ -176,8 +176,8 @@ const BuildingsUI = (() => {
     const currentBlock = owned > 0
       ? `<div class="tt-section">
            <span class="tt-label">Owned</span>
-           <div>${owned}× active · producing <strong>+${HUD.fmt(currentTotal)}/s</strong></div>
-           <div class="tt-meta">${sharePct.toFixed(1)}% of total production</div>
+           <div>${owned}× active · generating <strong>+${HUD.fmt(currentTotal)}/s</strong></div>
+           <div class="tt-meta">${sharePct.toFixed(1)}% of total resistance</div>
          </div>`
       : `<div class="tt-section">
            <span class="tt-label">Owned</span>

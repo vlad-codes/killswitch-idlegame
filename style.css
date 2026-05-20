@@ -420,19 +420,24 @@ body {
 
 .counter-eyebrow {
   font-family: var(--font-display);
-  font-size: 12px;
-  letter-spacing: 4px;
-  color: var(--text-muted);
+  font-size: clamp(20px, 2.2vw, 30px);
+  letter-spacing: 6px;
+  color: var(--text);
   text-transform: uppercase;
-  margin-bottom: 6px;
+  margin-bottom: 8px;
+  line-height: 1;
+  text-shadow:
+    0 0 20px rgba(237, 58, 58, 0.5),
+    0 0 60px rgba(237, 58, 58, 0.2),
+    0 0 120px rgba(237, 58, 58, 0.08);
 }
 
 .counter-value {
   font-family: var(--font-num);
-  font-size: 56px;
+  font-size: clamp(52px, 5.5vw, 72px);
   font-weight: 700;
-  letter-spacing: -2px;
-  color: var(--text);
+  letter-spacing: -3px;
+  color: var(--text-dim);
   line-height: 1;
   font-variant-numeric: tabular-nums;
   transition: transform 0.08s ease;
@@ -2116,7 +2121,7 @@ body {
   #left-col, #center-col, #right-col {
     grid-column: 1;
   }
-  .counter-value { font-size: 44px; }
+  .counter-value { font-size: 48px; letter-spacing: -2px; }
   #kill-switch { width: 180px; height: 180px; }
   .intro-headline { font-size: 56px; }
 }

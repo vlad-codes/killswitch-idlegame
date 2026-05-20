@@ -32,7 +32,8 @@ const HUD = (() => {
     const v = Math.floor(state.resistance);
     el.textContent = fmt(v);
 
-    if (v > lastCounter && (v - lastCounter) >= Math.max(1, state.clickPower)) {
+    const magThreshold = Math.max(1, Math.pow(10, Math.floor(Math.log10(Math.max(v, 1))) - 1));
+    if (v > lastCounter && (v - lastCounter) >= magThreshold) {
       el.classList.add('bump');
       setTimeout(() => el.classList.remove('bump'), 80);
     }
@@ -276,12 +277,12 @@ const HUD = (() => {
 
     const rows = [
       ['Peak Resistance',  fmt(Math.floor(state.maxResistance || 0))],
-      ['Production',       fmtRate(state.rate || 0)],
-      ['Total Clicks',     (state.totalClicks || 0).toLocaleString('en-US')],
-      ['Structures Built', totalBuildings.toLocaleString('en-US')],
+      ['Rate',                 fmtRate(state.rate || 0)],
+      ['Total Clicks',         (state.totalClicks || 0).toLocaleString('en-US')],
+      ['Operations Deployed',  totalBuildings.toLocaleString('en-US')],
       ['Breakthroughs',    (state.upgrades || []).length],
       ['Achievements',     (state.achievements || []).length + ' / ' + (typeof ACHIEVEMENTS !== 'undefined' ? ACHIEVEMENTS.length : '?')],
-      ['Prestige',         state.prestige || 0],
+      ['Wave',             state.prestige || 0],
       ['Playtime',         playtime],
     ];
 

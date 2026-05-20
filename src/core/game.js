@@ -306,7 +306,7 @@ const Game = (() => {
     const totalBuildings = Object.values(state.buildings).reduce((a, b) => a + b, 0);
     document.getElementById('victory-stats').innerHTML = `
       Resistance:    ${HUD.fmt(Math.floor(state.resistance))}<br>
-      Production:    ${HUD.fmt(state.rate)}/s<br>
+      Rate:          ${HUD.fmt(state.rate)}/s<br>
       Movement:      ${totalBuildings} structures<br>
       Breakthroughs: ${state.upgrades.length}<br>
       Clicks:        ${state.totalClicks.toLocaleString('en-US')}<br>
