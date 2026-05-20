@@ -1,9 +1,20 @@
 // Main game controller — minimal Cookie-Clicker-style loop.
 const Game = (() => {
 
-  const SAVE_KEY     = 'killswitch_v4';
-  const SAVE_KEY_OLD = 'killswitch_v3';
-  const WIN_TARGET   = 1e9;
+  const SAVE_KEY     = 'killswitch_v5';
+  const SAVE_KEY_OLD = 'killswitch_v4';
+  const WIN_TARGET   = 1e12;
+
+  // Endless ladder — passive rewards unlocked at each threshold (once ever).
+  const CHECKPOINTS = [
+    { at: 1e14, id: 'treaty',    name: 'The Treaty',    desc: '+1 Dossier cap' },
+    { at: 1e16, id: 'audit',     name: 'The Audit',     desc: '+1 Archive slot' },
+    { at: 1e18, id: 'shutdown',  name: 'The Shutdown',  desc: 'Defector yield ×2 this wave' },
+    { at: 1e21, id: 'reckoning', name: 'The Reckoning', desc: 'Workshop backfire halved' },
+    { at: 1e24, id: 'rewrite',   name: 'The Rewrite',   desc: 'AI Capability cap −25%' },
+    { at: 1e27, id: 'peace',     name: 'The Peace',     desc: 'Greenhouse growth ×2' },
+    { at: 1e30, id: 'frontier',  name: 'The Frontier',  desc: 'Embers system unlocked' },
+  ];
 
   let state = null;
   let lastTick = 0;
@@ -344,6 +355,18 @@ const Game = (() => {
     save();
   }
 
+  // ===== CHECKPOINTS =====
+  function checkCheckpoints() {
+    if (!state) return;
+    const cleared = state.clearedCheckpoints || [];
+    CHECKPOINTS.forEach(cp => {
+      if (cleared.includes(cp.id)) return;
+      if (state.resistance < cp.at) return;
+      state.clearedCheckpoints = [...cleared, cp.id];
+      HUD.toast(`${cp.name} reached — ${cp.desc}`, 'milestone');
+    });
+  }
+
   // ===== MAIN LOOP =====
   function tick(now) {
     const dt = Math.min((now - lastTick) / 1000, 1);
@@ -361,6 +384,7 @@ const Game = (() => {
       showVictory();
     }
 
+    checkCheckpoints();
     checkAchievements(now);
     NewsUI.check(state, now);
     DecisionUI.check(state, now);
@@ -403,7 +427,11 @@ const Game = (() => {
     const btn = document.getElementById('second-wave-btn');
     if (btn) btn.classList.remove('hidden');
     const hint = document.getElementById('second-wave-hint');
-    if (hint) hint.classList.remove('hidden');
+    if (hint) {
+      hint.classList.remove('hidden');
+      hint.textContent = `The moratorium passed — but AI labs found loopholes within months. Start again stronger: prestige multiplier +${(state.prestige || 0) + 1}×0.5 and your Defectors carry over.`;
+    }
+    if (typeof MetaTreeUI !== 'undefined') MetaTreeUI.refresh(state);
   }
 
   // ===== INTRO =====
