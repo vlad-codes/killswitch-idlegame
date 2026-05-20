@@ -211,6 +211,7 @@ const BuildingsUI = (() => {
     if (u.kind === 'click') {
       return state.totalClicks >= u.unlockClicks;
     }
+    // Milestones only appear once granted (auto-grant happens in game.js)
     return false;
   }
 
@@ -233,18 +234,21 @@ const BuildingsUI = (() => {
 
       anyVisible = true;
       const bought = state.upgrades.includes(u.id);
-      const canAfford = !bought && state.resistance >= u.cost;
+      const isMilestone = u.kind === 'milestone';
+      const canAfford = !bought && !isMilestone && state.resistance >= u.cost;
 
       if (!cell) {
-        if (_upgradesInitialized && !bought) {
+        if (_upgradesInitialized && !bought && !isMilestone) {
           HUD.toast(`Breakthrough unlocked: ${u.name}`, 'unlock');
         }
         cell = document.createElement('div');
         cell.id = id;
-        cell.className = 'upgrade-cell';
+        cell.className = 'upgrade-cell' + (isMilestone ? ' upgrade-milestone' : '');
         cell.textContent = u.icon;
         cell.dataset.id = u.id;
-        cell.addEventListener('click', () => Game.buyUpgrade(u.id));
+        if (!isMilestone) {
+          cell.addEventListener('click', () => Game.buyUpgrade(u.id));
+        }
         cell.addEventListener('mousemove', (e) => onUpgradeHover(e, u.id));
         cell.addEventListener('mouseleave', HUD.hideTooltip);
         grid.appendChild(cell);
@@ -264,20 +268,25 @@ const BuildingsUI = (() => {
     if (!u) return;
     const state = Game.getState();
     const bought = state.upgrades.includes(u.id);
-    const canAfford = state.resistance >= u.cost;
+    const isMilestone = u.kind === 'milestone';
+    const canAfford = !isMilestone && state.resistance >= u.cost;
 
-    const html = `
-      <span class="tt-title">${u.icon} ${u.name}</span>
-      <div class="tt-desc">${u.desc}</div>
-      ${u.effect ? `<div class="tt-effect">↑ ${u.effect}</div>` : ''}
-      ${bought
-        ? `<div class="tt-active">✓ Active</div>`
+    const statusBlock = bought
+      ? `<div class="tt-active">${isMilestone ? '★ Milestone reached' : '✓ Active'}</div>`
+      : isMilestone
+        ? `<div class="tt-meta">Auto-unlocks at ${u.unlockOwned} owned</div>`
         : `<div class="tt-section tt-buy ${canAfford ? 'can-afford' : 'cannot-afford'}" style="margin-top:0;padding-top:0;border-top:none;">
              <span class="tt-label">Cost</span>
              <div class="tt-buy-row">
                <span class="tt-price">${HUD.fmtCost(u.cost)} R</span>
              </div>
-           </div>`}
+           </div>`;
+
+    const html = `
+      <span class="tt-title">${u.icon} ${u.name}</span>
+      <div class="tt-desc">${u.desc}</div>
+      ${u.effect ? `<div class="tt-effect">↑ ${u.effect}</div>` : ''}
+      ${statusBlock}
     `;
     HUD.showTooltip(html, e.clientX, e.clientY);
   }

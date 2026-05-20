@@ -1,6 +1,7 @@
-// Breakthroughs — double production of a structure or click power.
-// Structure breakthroughs unlock at 10 / 25 / 50 owned.
-// Click breakthroughs unlock at click thresholds.
+// Breakthroughs — multiply production of a structure or click power.
+// Structure breakthroughs (kind:'building') unlock at 10 / 25 / 50 owned — must be purchased.
+// Milestone multipliers  (kind:'milestone') unlock at 100/150/200/300/450/600 owned — free, auto-granted.
+// Click breakthroughs    (kind:'click')     unlock at click count thresholds.
 
 const UPGRADES = [];
 
@@ -91,6 +92,34 @@ BUILDINGS.forEach(b => {
       buildingName: b.name,
       rateMult:    tier.rateMult,
       unlockOwned: tier.unlockAt
+    });
+  });
+});
+
+// Milestone multipliers — auto-granted when owned count crosses threshold (no cost).
+const MILESTONE_TIERS = [
+  { unlockAt: 100, rateMult: 2, label: 'Tipping Point'  },
+  { unlockAt: 150, rateMult: 2, label: 'Movement Status' },
+  { unlockAt: 200, rateMult: 3, label: 'Mainstream'      },
+  { unlockAt: 300, rateMult: 3, label: 'Institutional'   },
+  { unlockAt: 450, rateMult: 3, label: 'Generational'    },
+  { unlockAt: 600, rateMult: 4, label: 'Inevitable'      },
+];
+
+BUILDINGS.forEach(b => {
+  MILESTONE_TIERS.forEach((tier, i) => {
+    UPGRADES.push({
+      id:           `${b.id}_m${i + 1}`,
+      kind:         'milestone',
+      icon:         b.icon,
+      name:         `${b.name}: ${tier.label}`,
+      desc:         `Reached ${tier.unlockAt} ${b.name}s. The network has critical mass.`,
+      effect:       `×${tier.rateMult} output for every ${b.name}`,
+      cost:         0,
+      buildingId:   b.id,
+      buildingName: b.name,
+      rateMult:     tier.rateMult,
+      unlockOwned:  tier.unlockAt
     });
   });
 });

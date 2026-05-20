@@ -92,7 +92,7 @@ const Game = (() => {
     if (!b) return 0;
     let mult = 1;
     UPGRADES.forEach(u => {
-      if (u.kind === 'building' && u.buildingId === id && state.upgrades.includes(u.id)) {
+      if ((u.kind === 'building' || u.kind === 'milestone') && u.buildingId === id && state.upgrades.includes(u.id)) {
         mult *= u.rateMult;
       }
     });
@@ -104,6 +104,18 @@ const Game = (() => {
     return 1 + count * 0.02;
   }
 
+  function grantMilestones(s) {
+    UPGRADES.forEach(u => {
+      if (u.kind !== 'milestone') return;
+      if (s.upgrades.includes(u.id)) return;
+      const owned = (s.buildings && s.buildings[u.buildingId]) || 0;
+      if (owned >= u.unlockOwned) {
+        s.upgrades.push(u.id);
+        HUD.toast(`${u.name} — ${u.effect}`, 'milestone');
+      }
+    });
+  }
+
   function computeRate(s) {
     let total = 0;
     BUILDINGS.forEach(b => {
@@ -111,7 +123,7 @@ const Game = (() => {
       if (owned === 0) return;
       let mult = 1;
       UPGRADES.forEach(u => {
-        if (u.kind === 'building' && u.buildingId === b.id && s.upgrades.includes(u.id)) {
+        if ((u.kind === 'building' || u.kind === 'milestone') && u.buildingId === b.id && s.upgrades.includes(u.id)) {
           mult *= u.rateMult;
         }
       });
@@ -198,6 +210,7 @@ const Game = (() => {
 
     state.resistance -= totalCost;
     state.buildings[id] = owned + n;
+    grantMilestones(state);
     state.rate = computeRate(state);
   }
 
@@ -354,6 +367,7 @@ const Game = (() => {
   // ===== INIT =====
   function init() {
     state = loadState() || newState();
+    grantMilestones(state);
     state.rate = computeRate(state);
     recomputeClickPower();
 
