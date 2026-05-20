@@ -2143,6 +2143,182 @@ body {
   color: var(--text);
 }
 
+/* ===== META-TREE (Strategy Tab) ===== */
+.strategy-panel {
+  padding: 12px 0;
+}
+.strategy-locked {
+  text-align: center;
+  padding: 48px 24px;
+  color: var(--text-muted);
+}
+.strategy-locked-icon { font-size: 32px; margin-bottom: 12px; }
+.strategy-locked-title {
+  font-family: var(--font-display);
+  font-size: 16px;
+  letter-spacing: 2px;
+  color: var(--text);
+  margin-bottom: 8px;
+}
+.strategy-locked-body { font-size: 13px; line-height: 1.6; }
+
+.strategy-header {
+  margin-bottom: 14px;
+  padding: 10px 14px;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.07);
+  border-radius: 6px;
+}
+.strategy-currency {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+.strategy-currency-icon { font-size: 18px; }
+.strategy-currency-label {
+  font-family: var(--font-display);
+  font-size: 12px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+.strategy-currency-value {
+  font-family: var(--font-num);
+  font-size: 16px;
+  font-weight: 700;
+  color: #a78bfa;
+}
+.strategy-currency-total {
+  font-size: 11px;
+  color: var(--text-muted);
+  margin-left: auto;
+}
+.strategy-passive {
+  font-size: 11px;
+  color: #10b981;
+  letter-spacing: 0.5px;
+}
+
+.strategy-paths {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.meta-path {
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 8px;
+  overflow: hidden;
+}
+.meta-path-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  background: rgba(255,255,255,0.04);
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+.meta-path-icon { font-size: 14px; }
+.meta-path-name {
+  font-family: var(--font-display);
+  font-size: 12px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+.meta-path-a .meta-path-header { border-left: 2px solid #ef4444; }
+.meta-path-b .meta-path-header { border-left: 2px solid #10b981; }
+.meta-path-c .meta-path-header { border-left: 2px solid #3b82f6; }
+
+.meta-path-nodes {
+  display: flex;
+  gap: 6px;
+  padding: 10px;
+  flex-wrap: wrap;
+}
+.meta-node {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 8px 6px;
+  min-width: 60px;
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 6px;
+  cursor: pointer;
+  background: rgba(255,255,255,0.02);
+  transition: background 0.15s, border-color 0.15s, transform 0.1s;
+  text-align: center;
+}
+.meta-node:hover {
+  background: rgba(255,255,255,0.06);
+  border-color: rgba(255,255,255,0.25);
+  transform: translateY(-1px);
+}
+.meta-node-icon { font-size: 20px; }
+.meta-node-name {
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  line-height: 1.2;
+  max-width: 58px;
+}
+.meta-node-cost {
+  font-family: var(--font-num);
+  font-size: 10px;
+  color: #a78bfa;
+  font-weight: 700;
+}
+.meta-node-capstone-badge {
+  position: absolute;
+  top: -6px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 7px;
+  font-weight: 800;
+  letter-spacing: 0.8px;
+  background: #7c3aed;
+  color: #fff;
+  padding: 1px 5px;
+  border-radius: 3px;
+}
+.meta-node.meta-node-bought {
+  border-color: rgba(167,139,250,0.4);
+  background: rgba(167,139,250,0.08);
+  cursor: default;
+}
+.meta-node.meta-node-bought:hover { transform: none; }
+.meta-node.meta-node-bought .meta-node-cost { color: #10b981; }
+.meta-node.meta-node-affordable {
+  border-color: rgba(167,139,250,0.5);
+  background: rgba(167,139,250,0.06);
+}
+.meta-node.meta-node-affordable:hover {
+  border-color: #a78bfa;
+  background: rgba(167,139,250,0.14);
+}
+.meta-node.meta-node-blocked {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+.meta-node.meta-node-blocked:hover { transform: none; background: rgba(255,255,255,0.02); }
+
+/* Capstone nodes shown below the path nodes row */
+.meta-path .meta-node[data-id$='6'] {
+  margin: 0 10px 10px;
+  width: calc(100% - 20px);
+  flex-direction: row;
+  min-width: unset;
+  padding: 10px 14px;
+}
+.meta-path .meta-node[data-id$='6'] .meta-node-name {
+  max-width: unset;
+  font-size: 11px;
+}
+
 /* =========================================================
    VICTORY — SECOND WAVE
    ========================================================= */

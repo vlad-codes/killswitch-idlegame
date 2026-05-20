@@ -51,10 +51,14 @@ const Game = (() => {
       const s = JSON.parse(raw);
       let offlineDt = 0;
       if (s.savedAt) {
-        offlineDt = Math.min((Date.now() - s.savedAt) / 1000, 4 * 3600);
+        // B6: Generational Turn — offline cap 4h→16h, efficiency 50%→90%
+        const hasGenerational = (s.metaTreePurchased || []).includes('tree_b6');
+        const offlineCap = hasGenerational ? 16 * 3600 : 4 * 3600;
+        const offlineEff = hasGenerational ? 0.9 : 0.5;
+        offlineDt = Math.min((Date.now() - s.savedAt) / 1000, offlineCap);
         if (offlineDt > 5) {
           const r = computeRate(s);
-          s.resistance += r * offlineDt * 0.5;
+          s.resistance += r * offlineDt * offlineEff;
           s.maxResistance = Math.max(s.maxResistance || 0, s.resistance);
         }
       }
@@ -125,11 +129,13 @@ const Game = (() => {
   }
 
   function grantMilestones(s) {
+    // B4: Mass Conversion — milestones trigger 25 owned earlier
+    const massBump = (s.metaTreePurchased || []).includes('tree_b4') ? 25 : 0;
     UPGRADES.forEach(u => {
       if (u.kind !== 'milestone') return;
       if (s.upgrades.includes(u.id)) return;
       const owned = (s.buildings && s.buildings[u.buildingId]) || 0;
-      if (owned >= u.unlockOwned) {
+      if (owned >= Math.max(1, u.unlockOwned - massBump)) {
         s.upgrades.push(u.id);
         HUD.toast(`${u.name} — ${u.effect}`, 'milestone');
       }
@@ -147,16 +153,20 @@ const Game = (() => {
           mult *= u.rateMult;
         }
         if (u.kind === 'synergy' && s.upgrades.includes(u.id)) {
-          if (u.synA === b.id) mult *= (1 + (s.buildings[u.synB] || 0) * 0.0005);
-          else if (u.synB === b.id) mult *= (1 + (s.buildings[u.synA] || 0) * 0.0005);
+          // B2: Trusted Voices — synergy bonuses 50% more effective
+          const synergyBoost = (s.metaTreePurchased || []).includes('tree_b2') ? 1.5 : 1;
+          if (u.synA === b.id) mult *= (1 + (s.buildings[u.synB] || 0) * 0.0005 * synergyBoost);
+          else if (u.synB === b.id) mult *= (1 + (s.buildings[u.synA] || 0) * 0.0005 * synergyBoost);
         }
       });
       total += b.baseRate * mult * owned;
     });
+    // B1: Viral Loops — +10% global production
+    const viralMult = (s.metaTreePurchased || []).includes('tree_b1') ? 1.1 : 1;
     const unspent = getDefectorsAvailable(s);
     const softPowerMult = (s.metaTreePurchased || []).includes('tree_c6') ? 0.02 : 0.01;
     const defectorBonus = 1 + Math.min(5.0, unspent * softPowerMult);
-    return total * (s.prestigeMult || 1) * getConvictionMult(s) * defectorBonus;
+    return total * (s.prestigeMult || 1) * getConvictionMult(s) * defectorBonus * viralMult;
   }
 
   function recomputeClickPower() {
@@ -165,6 +175,13 @@ const Game = (() => {
       const u = UPGRADES.find(x => x.id === id);
       if (u && u.kind === 'click') power += u.clickPower;
     });
+    // A1: Sleeper Cells — +50% click power
+    if ((state.metaTreePurchased || []).includes('tree_a1')) power *= 1.5;
+    // A5: Glass Datacenters — +1 click per total building owned
+    if ((state.metaTreePurchased || []).includes('tree_a5')) {
+      const totalBuildings = Object.values(state.buildings || {}).reduce((a, b) => a + b, 0);
+      power += Math.floor(Math.sqrt(totalBuildings));
+    }
     state.clickPower = power;
   }
 
@@ -179,7 +196,9 @@ const Game = (() => {
   function activateCritical() {
     _criticalActive = true;
     document.querySelector('.switch-core')?.classList.add('critical');
-    _criticalTimer = setTimeout(deactivateCritical, 3500);
+    // A3: Burn Notice — 6s window instead of 3.5s
+    const windowMs = (state && (state.metaTreePurchased || []).includes('tree_a3')) ? 6000 : 3500;
+    _criticalTimer = setTimeout(deactivateCritical, windowMs);
   }
 
   function deactivateCritical() {
@@ -194,13 +213,16 @@ const Game = (() => {
     const isCritical = _criticalActive;
     const clickBoost = (state.clickBoostExpiry && Date.now() < state.clickBoostExpiry)
       ? (state.clickBoostMult || 1) : 1;
+    const critMult = (state.metaTreePurchased || []).includes('tree_a2') ? 8 : 5;
     const power = isCritical
-      ? state.clickPower * 5 * clickBoost
+      ? state.clickPower * critMult * clickBoost
       : state.clickPower * clickBoost;
 
     if (isCritical) {
       deactivateCritical();
-      HUD.toast(`Critical hit — ×5`, 'milestone');
+      // A2: Day-zero Disclosure — crits deal ×8 instead of ×5
+      const critMult = (state.metaTreePurchased || []).includes('tree_a2') ? 8 : 5;
+      HUD.toast(`Critical hit — ×${critMult}`, 'milestone');
     }
 
     state.resistance += power;
@@ -423,6 +445,7 @@ const Game = (() => {
     NewsUI.init(state);
     DecisionUI.init(state);
     PhantomUI.init(state);
+    MetaTreeUI.init(state);
     HUD.updateAchievements(state);
     HUD.updateWave(state);
     showIntroIfFirstVisit();
@@ -454,7 +477,8 @@ const Game = (() => {
         document.querySelectorAll('.tab-panel').forEach(p => p.classList.add('hidden'));
         btn.classList.add('active');
         document.getElementById('tab-' + btn.dataset.tab).classList.remove('hidden');
-        if (btn.dataset.tab === 'stats') HUD.renderStats(state);
+        if (btn.dataset.tab === 'stats')     HUD.renderStats(state);
+        if (btn.dataset.tab === 'strategy')  MetaTreeUI.refresh(state);
       });
     });
 

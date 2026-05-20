@@ -66,6 +66,11 @@ const DecisionUI = (() => {
     }, 18);
   }
 
+  function getDecisionDuration(state) {
+    // B3: Counter-narrative — decision buffs last 60s instead of 45s
+    return (state.metaTreePurchased || []).includes('tree_b3') ? 60000 : RATE_DURATION;
+  }
+
   function applyRateBoost(state, duration) {
     state.decisionMult       = RATE_MULT;
     state.decisionMultExpiry = Date.now() + duration;
@@ -118,6 +123,7 @@ const DecisionUI = (() => {
       const cascade = Math.random() < 0.05;
       const success = cascade || Math.random() < successChance(buildingId, state);
 
+      const dur = getDecisionDuration(state);
       if (cascade) {
         applyRateBoost(state, CASCADE_DURATION);
         applyClickBoost(state, CASCADE_DURATION);
@@ -125,14 +131,15 @@ const DecisionUI = (() => {
         resultEl.className   = 'decision-result decision-cascade';
         HUD.toast('Cascade — ×2.5 rate + ×3 click, 20s', 'milestone');
       } else if (success) {
+        const secs = Math.round(dur / 1000);
         if (kind === 'rate') {
-          applyRateBoost(state, RATE_DURATION);
-          resultEl.textContent = 'The call paid off. ×2.5 rate — 45 seconds.';
-          HUD.toast('Decision held — ×2.5 rate, 45s', 'milestone');
+          applyRateBoost(state, dur);
+          resultEl.textContent = `The call paid off. ×2.5 rate — ${secs} seconds.`;
+          HUD.toast(`Decision held — ×2.5 rate, ${secs}s`, 'milestone');
         } else {
-          applyClickBoost(state, CLICK_DURATION);
-          resultEl.textContent = 'Bold move. ×3 click power — 45 seconds.';
-          HUD.toast('Decision held — ×3 click power, 45s', 'milestone');
+          applyClickBoost(state, dur);
+          resultEl.textContent = `Bold move. ×3 click power — ${secs} seconds.`;
+          HUD.toast(`Decision held — ×3 click power, ${secs}s`, 'milestone');
         }
         resultEl.className = 'decision-result decision-success';
       } else {

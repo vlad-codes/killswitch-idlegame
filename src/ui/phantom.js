@@ -62,10 +62,16 @@ const PhantomUI = (() => {
       node.classList.add('phantom-captured');
       setTimeout(() => node.remove(), 250);
 
+      // A4: Bricked Servers — all phantoms also grant +60s production on capture
+      const brickedBonus = (state.metaTreePurchased || []).includes('tree_a4')
+        ? (state.rate || 0) * 60 : 0;
+      if (brickedBonus > 0) state.resistance = (state.resistance || 0) + brickedBonus;
+
       if (type === 'blue') {
         state.clickBoostMult   = 5;
         state.clickBoostExpiry = Date.now() + 20000;
-        HUD.toast('Signal intercepted — ×5 click for 20s', 'milestone');
+        const extra = brickedBonus > 0 ? ` +${HUD.fmt(Math.floor(brickedBonus))} R` : '';
+        HUD.toast('Signal intercepted — ×5 click for 20s' + extra, 'milestone');
       } else if (type === 'gold') {
         const bonus = (state.rate || 0) * 90;
         state.resistance = (state.resistance || 0) + bonus;
@@ -73,7 +79,8 @@ const PhantomUI = (() => {
       } else {
         state.clickBoostMult   = 15;
         state.clickBoostExpiry = Date.now() + 30000;
-        HUD.toast('Counter-intel — ×15 click for 30s', 'milestone');
+        const extra = brickedBonus > 0 ? ` +${HUD.fmt(Math.floor(brickedBonus))} R` : '';
+        HUD.toast('Counter-intel — ×15 click for 30s' + extra, 'milestone');
       }
 
       scheduleNext();
