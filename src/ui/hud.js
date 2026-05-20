@@ -176,37 +176,12 @@ const HUD = (() => {
   }
 
   // ===== Toast notifications =====
-  const _toastStack = [];
-
   function toast(text, type = 'unlock') {
-    const wrap = document.getElementById('toast-wrap');
-    if (!wrap) return;
-
-    if (_toastStack.length >= 3) {
-      const old = _toastStack.shift();
-      old.remove();
-    }
-
-    const el = document.createElement('div');
-    el.className = `toast toast-${type}`;
-    el.textContent = text;
-    wrap.appendChild(el);
-    _toastStack.push(el);
-
-    setTimeout(() => {
-      el.classList.add('toast-out');
-      setTimeout(() => {
-        el.remove();
-        const idx = _toastStack.indexOf(el);
-        if (idx > -1) _toastStack.splice(idx, 1);
-      }, 400);
-    }, 3500);
-
     pushEventLog(text, type);
   }
 
   // ===== Event Log (persistent list below decision panel) =====
-  const MAX_LOG_ENTRIES = 30;
+  const MAX_LOG_ENTRIES = 3;
 
   function pushEventLog(text, type) {
     const list = document.getElementById('event-log-list');
@@ -229,6 +204,29 @@ const HUD = (() => {
     if (all.length > MAX_LOG_ENTRIES) {
       all[all.length - 1].remove();
     }
+
+    setTimeout(() => {
+      if (!entry.isConnected) return;
+      entry.style.overflow = 'hidden';
+      const h = entry.getBoundingClientRect().height;
+      entry.style.maxHeight = h + 'px';
+      entry.offsetHeight;
+      entry.style.transition = 'opacity 0.4s ease, transform 0.4s ease, max-height 0.35s ease 0.35s, padding-top 0.35s ease 0.35s, padding-bottom 0.35s ease 0.35s';
+      entry.style.opacity = '0';
+      entry.style.transform = 'translateX(20px)';
+      entry.style.maxHeight = '0';
+      entry.style.paddingTop = '0';
+      entry.style.paddingBottom = '0';
+      setTimeout(() => {
+        entry.remove();
+        if (!list.querySelector('.event-entry') && !list.querySelector('.event-log-empty')) {
+          const emptyEl = document.createElement('div');
+          emptyEl.className = 'event-log-empty';
+          emptyEl.textContent = 'No events yet.';
+          list.appendChild(emptyEl);
+        }
+      }, 780);
+    }, 60000);
   }
 
   // ===== Wave indicator =====
