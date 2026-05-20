@@ -10,6 +10,7 @@ const DecisionUI = (() => {
   let nextAt  = 0;
   let pending = false;
   let usedIndices = [];
+  let _typewriterTimer = null;
 
   function pickScenario() {
     if (usedIndices.length >= DECISIONS.length) usedIndices = [];
@@ -25,31 +26,66 @@ const DecisionUI = (() => {
     pending = false;
   }
 
+  function setIdle() {
+    const panel     = document.getElementById('decision-panel');
+    const sitEl     = document.getElementById('decision-situation');
+    const choicesEl = document.getElementById('decision-choices');
+    const resultEl  = document.getElementById('decision-result');
+    if (!panel) return;
+
+    clearInterval(_typewriterTimer);
+    panel.classList.add('decision-idle');
+    sitEl.innerHTML = '<span class="decision-idle-placeholder">AWAITING FIELD DECISION<span class="idle-cursor">_</span></span>';
+    choicesEl.classList.add('hidden');
+    resultEl.className = 'decision-result hidden';
+    resultEl.textContent = '';
+  }
+
+  function typewrite(el, text, onDone) {
+    clearInterval(_typewriterTimer);
+    el.textContent = '';
+    let i = 0;
+    _typewriterTimer = setInterval(() => {
+      el.textContent = text.slice(0, ++i);
+      if (i >= text.length) {
+        clearInterval(_typewriterTimer);
+        if (onDone) onDone();
+      }
+    }, 18);
+  }
+
   function showDecision(state) {
     pending = true;
-    const scenario = pickScenario();
-
-    const panel    = document.getElementById('decision-panel');
-    const sitEl    = document.getElementById('decision-situation');
+    const scenario  = pickScenario();
+    const panel     = document.getElementById('decision-panel');
+    const sitEl     = document.getElementById('decision-situation');
     const choicesEl = document.getElementById('decision-choices');
-    const resultEl = document.getElementById('decision-result');
-    const btnA     = document.getElementById('decision-a');
-    const btnB     = document.getElementById('decision-b');
+    const resultEl  = document.getElementById('decision-result');
+    const btnA      = document.getElementById('decision-a');
+    const btnB      = document.getElementById('decision-b');
 
     if (!panel) return;
 
-    sitEl.textContent = scenario.situation;
-    btnA.textContent  = scenario.a;
-    btnB.textContent  = scenario.b;
-
+    panel.classList.remove('decision-idle');
     resultEl.className = 'decision-result hidden';
     resultEl.textContent = '';
-    choicesEl.classList.remove('hidden');
+    choicesEl.classList.add('hidden');
+    btnA.classList.remove('btn-reveal');
+    btnB.classList.remove('btn-reveal');
 
-    panel.classList.remove('hidden');
+    // Scan-in animation on the panel
     void panel.offsetWidth;
     panel.classList.add('decision-enter');
     setTimeout(() => panel.classList.remove('decision-enter'), 500);
+
+    // Typewriter for situation text, then reveal buttons staggered
+    typewrite(sitEl, scenario.situation, () => {
+      btnA.textContent = scenario.a;
+      btnB.textContent = scenario.b;
+      choicesEl.classList.remove('hidden');
+      btnA.classList.add('btn-reveal');
+      setTimeout(() => btnB.classList.add('btn-reveal'), 90);
+    });
 
     function resolve() {
       btnA.onclick = null;
@@ -70,7 +106,7 @@ const DecisionUI = (() => {
       }
 
       setTimeout(() => {
-        panel.classList.add('hidden');
+        setIdle();
         scheduleNext();
       }, success ? 3500 : 2500);
     }
@@ -97,6 +133,7 @@ const DecisionUI = (() => {
   }
 
   function init(state) {
+    setIdle();
     scheduleNext(performance.now());
   }
 

@@ -201,6 +201,34 @@ const HUD = (() => {
         if (idx > -1) _toastStack.splice(idx, 1);
       }, 400);
     }, 3500);
+
+    pushEventLog(text, type);
+  }
+
+  // ===== Event Log (persistent list below decision panel) =====
+  const MAX_LOG_ENTRIES = 30;
+
+  function pushEventLog(text, type) {
+    const list = document.getElementById('event-log-list');
+    if (!list) return;
+
+    const empty = list.querySelector('.event-log-empty');
+    if (empty) empty.remove();
+
+    const now = new Date();
+    const hh  = String(now.getHours()).padStart(2, '0');
+    const mm  = String(now.getMinutes()).padStart(2, '0');
+    const ss  = String(now.getSeconds()).padStart(2, '0');
+
+    const entry = document.createElement('div');
+    entry.className = `event-entry event-entry-${type}`;
+    entry.innerHTML = `<span class="event-time">${hh}:${mm}:${ss}</span><span class="event-text">${text}</span>`;
+    list.prepend(entry);
+
+    const all = list.querySelectorAll('.event-entry');
+    if (all.length > MAX_LOG_ENTRIES) {
+      all[all.length - 1].remove();
+    }
   }
 
   // ===== Wave indicator =====
